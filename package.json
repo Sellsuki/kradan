@@ -4,6 +4,9 @@
   "description": "A Vue.js project",
   "author": "zesani <7sin@outlook.co.th>",
   "private": true,
+  "bin": {
+    "kradan": "kradan.js"
+  },
   "scripts": {
     "dev": "node build/dev-server.js",
     "build": "node build/build.js",
@@ -12,9 +15,12 @@
     "lint": "eslint --ext .js,.vue src test/unit/specs"
   },
   "dependencies": {
+    "vue": "^2.0.3",
     "highlight.js": "^9.7.0",
-    "vue": "^2.0.1",
-    "vue-loader": "^9.7.0"
+    "chokidar": "^1.6.0",
+    "lodash": "^4.16.4",
+    "readdir": "0.0.13",
+    "socket.io": "^1.5.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.4.0",
@@ -62,7 +68,7 @@
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0",
     "url-loader": "^0.5.7",
-    "vue-loader": "^9.4.0",
+    "vue-loader": "^9.7.0",
     "vue-style-loader": "^1.0.0",
     "webpack": "^1.13.2",
     "webpack-dev-middleware": "^1.8.3",
