@@ -7,7 +7,6 @@ var http = require('http').Server(app)
 var io = require('socket.io')(http)
 var chokidar = require('chokidar')
 var helper = require('./helper.js')
-// const path = require('path')
 
 var data = {}
 data.ls = helper.getDirJson('.')
@@ -15,7 +14,12 @@ data.list = helper.getDirList('.')
 
 app.use(express.static('./dist'))
 
-app.use('/files', express.static('.'))
+app.use('/files', express.static('.', {
+  dotfiles: 'allow',
+  setHeaders: function (res, path, stat) {
+    res.header('Content-Type', 'text/plain')
+  }
+}))
 
 app.get('/ls', function (req, res) {
   let result = helper.getDirJson('.')
