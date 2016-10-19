@@ -15,12 +15,13 @@
     "lint": "eslint --ext .js,.vue src test/unit/specs"
   },
   "dependencies": {
-    "vue": "^2.0.3",
-    "highlight.js": "^9.7.0",
     "chokidar": "^1.6.0",
+    "express": "^4.14.0",
+    "highlight.js": "^9.7.0",
     "lodash": "^4.16.4",
     "readdir": "0.0.13",
-    "socket.io": "^1.5.0"
+    "socket.io": "^1.5.0",
+    "vue": "^2.0.3"
   },
   "devDependencies": {
     "autoprefixer": "^6.4.0",
