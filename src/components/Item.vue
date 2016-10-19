@@ -3,8 +3,8 @@
     <div
       :class="{bold: isFolder}"
       @click="onClick">
+      <span v-if="isFolder">{{open ? '▼' : '▶'}}</span>
       {{model.name}}
-      <span v-if="isFolder">[{{open ? '-' : '+'}}]</span>
     </div>
     <ul v-show="open" v-if="isFolder">
       <item

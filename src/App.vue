@@ -92,7 +92,7 @@ $column-gap: 0px;
 @import '~bulma';
 
 html, body {
-  font-family: Menlo, Consolas, monospace;
+  font-family: Menlo,Monaco,Consolas,Courier New,monospace!important;
   background-color: #202A2F;
   color: #9AAEB7;
   font-size: 18px;
