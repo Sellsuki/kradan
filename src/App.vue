@@ -30,6 +30,7 @@ export default {
         path: '/',
         children: []
       },
+      currentOpenFilePath: '',
       code: '',
       editorOption: {
         tabSize: 2,
@@ -49,13 +50,21 @@ export default {
     socket.on('list', function (list) {
       vm.list = list
     })
-    socket.on('change', function (msg) {
-      console.log('change ' + msg)
+    socket.on('change', function (path) {
+      console.log('change ' + path)
+      if (vm.currentOpenFilePath === path) {
+        vm.$http.get('http://localhost:3000/files' + path).then((response) => {
+          vm.code = response.body
+        }, (response) => {
+          console.log(response)
+        })
+      }
     })
   },
   methods: {
     openFile (path) {
       let vm = this
+      vm.currentOpenFilePath = path
       // TODO : Fix editorOption.mode not reactive
       let ext = path.split('.').pop()
       switch (ext) {
@@ -74,7 +83,7 @@ export default {
         default:
           vm.editorOption.mode = 'text/javascript'
       }
-      this.$http.get('http://localhost:3000/files' + path).then((response) => {
+      vm.$http.get('http://localhost:3000/files' + path).then((response) => {
         vm.code = response.body
       }, (response) => {
         console.log(response)

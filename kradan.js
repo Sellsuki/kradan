@@ -62,7 +62,7 @@ chokidar.watch('.', {
       }
       break
     case 'change':
-      io.emit('change', path)
+      io.emit('change', '/' + path)
       break
     default:
       console.log(event + ' : ' + path)
