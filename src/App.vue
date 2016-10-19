@@ -32,8 +32,8 @@ export default {
       },
       code: '',
       editorOption: {
-        tabSize: 4,
-        mode: 'text/javascript',
+        tabSize: 2,
+        mode: 'script/x-vue',
         theme: 'material',
         lineNumbers: true,
         line: true,

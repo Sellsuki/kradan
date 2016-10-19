@@ -22,7 +22,7 @@
     "readdir": "0.0.13",
     "socket.io": "^1.5.0",
     "vue": "^2.0.3",
-    "vue-codemirror": "^2.1.0",
+    "vue-codemirror": "git+https://github.com/n9ti/vue-codemirror.git",
     "vue-resource": "^1.0.3"
   },
   "devDependencies": {
