@@ -21,6 +21,7 @@ app.use('/files', express.static('.', {
 }))
 
 var staticPath = path.join(__dirname, './dist')
+console.log(staticPath)
 app.use('/', express.static(staticPath))
 
 app.get('/ls', function (req, res) {
