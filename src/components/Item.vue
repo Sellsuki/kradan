@@ -1,25 +1,20 @@
 <template lang="html">
-  <li>
-    <div
-      :class="{bold: isFolder}"
-      @click="onClick">
-      {{model.name}}
-      <span v-if="isFolder">[{{open ? '-' : '+'}}]</span>
+  <div>
+    <div :class="{bold: isFolder}" @click="onClick">
+    <i :class="iconFolder"  v-show="isFolder">&nbsp&nbsp{{model.name}}</i>
+    <i class="code icon" v-show="!isFolder" @click="openFile(model.path)">&nbsp&nbsp{{model.name}}</i>
     </div>
     <ul v-show="open" v-if="isFolder">
-      <item
-        class="item"
-        v-for="model in model.children"
-        :model="model"
-        @openFile="openFile">
+      <item class="item" v-for="model in model.children" :model="model" :open-file="openFile">
       </item>
     </ul>
-  </li>
+  </div>
 </template>
 
 <script>
 import Item from './Item'
 export default {
+  props: ['model', 'openFile'],
   name: 'item',
   data () {
     return {
@@ -31,18 +26,23 @@ export default {
       this.open = true
     }
   },
-  props: {
-    model: Object
-  },
   computed: {
     isFolder: function () {
       return this.model.type === 'directory'
+    },
+    iconFolder: function () {
+      var icon = 'folder icon'
+      if (this.open) {
+        icon = 'folder open icon'
+      }
+      return icon
     }
   },
   methods: {
-    openFile (path) {
-      this.$emit('openFile', path)
-    },
+    // openFile (path) {
+    //   console.log('open0')
+    //   this.$emit('openFile', path)
+    // },
     onClick: function () {
       if (this.isFolder) {
         this.open = !this.open
@@ -56,4 +56,7 @@ export default {
 </script>
 
 <style lang="css">
+.code {
+  cursor: pointer;
+}
 </style>
