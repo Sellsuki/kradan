@@ -27,7 +27,7 @@ export default {
     let vm = this
     var socket = io.connect('http://localhost:3000')
     socket.on('list', function (list) {
-      vm.list.children = list
+      vm.list = list
     })
     socket.on('change', function (msg) {
       console.log('change ' + msg)

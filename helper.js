@@ -48,7 +48,14 @@ let getDirJson = function (path) {
     }
     temp[i].splice(0, 0, info)
   })
-  return _.sortBy(result, ['type'])
+  let rootName = process.cwd().split('/').pop()
+  let dirTree = {
+    name: rootName,
+    path: '/',
+    type: 'directory',
+    children: _.sortBy(result, ['type'])
+  }
+  return dirTree
 }
 
 module.exports = { getDirJson, getDirList }
