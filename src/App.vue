@@ -1,9 +1,15 @@
 <template lang="html">
   <div class="">
-    <item
-      class="item"
-      :model="list">
-    </item>
+    <ul class="">
+      <item
+        class="item"
+        :model="list"
+        @openFile="openFile">
+      </item>
+    </ul>
+    <div class="">
+      {{ file }}
+    </div>
   </div>
 </template>
 
@@ -17,8 +23,10 @@ export default {
     return {
       list: {
         name: 'Root',
+        path: '/',
         children: []
-      }
+      },
+      file: ''
     }
   },
   computed: {},
@@ -26,13 +34,21 @@ export default {
     let vm = this
     var socket = io.connect('http://localhost:3000')
     socket.on('list', function (list) {
-      vm.list.children = list
+      vm.list = list
     })
     socket.on('change', function (msg) {
       console.log('change ' + msg)
     })
   },
   methods: {
+    openFile (path) {
+      let vm = this
+      this.$http.get('http://localhost:3000/files' + path).then((response) => {
+        vm.file = response.body
+      }, (response) => {
+        console.log(response)
+      })
+    }
   },
   components: {
     Item
@@ -42,7 +58,8 @@ export default {
 <style lang="css">
 body {
   font-family: Menlo, Consolas, monospace;
-  color: #444;
+  background-color: #202A2F;
+  color: #9AAEB7;
 }
 .item {
   cursor: pointer;

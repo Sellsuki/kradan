@@ -7,12 +7,17 @@ var http = require('http').Server(app)
 var io = require('socket.io')(http)
 var chokidar = require('chokidar')
 var helper = require('./helper.js')
+var path = require('path')
 
 var data = {}
 data.ls = helper.getDirJson('.')
 data.list = helper.getDirList('.')
 
-app.use(express.static('./dist'))
+app.all('/*', function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With')
+  next()
+})
 
 app.use('/files', express.static('.', {
   dotfiles: 'allow',
@@ -20,6 +25,9 @@ app.use('/files', express.static('.', {
     res.header('Content-Type', 'text/plain')
   }
 }))
+
+var staticPath = path.join(__dirname, './dist')
+app.use('/', express.static(staticPath))
 
 app.get('/ls', function (req, res) {
   let result = helper.getDirJson('.')
@@ -29,8 +37,6 @@ app.get('/ls', function (req, res) {
 io.on('connection', function (socket) {
   io.emit('list', data.ls)
 })
-
-console.log(data.list)
 
 chokidar.watch('.', {
   ignored: /[\/\\]\.|node_modules|\.git|\.DS_Store/,
@@ -45,14 +51,12 @@ chokidar.watch('.', {
       break
     case 'add':
       if (!data.list.find(item => item === path)) {
-        console.log('emit ' + path)
         data.ls = helper.getDirJson('.')
         io.emit('list', data.ls)
       }
       break
     case 'addDir':
       if (!data.list.find(item => item === path + '/') && path !== '.') {
-        console.log('emit ' + path)
         data.ls = helper.getDirJson('.')
         io.emit('list', data.ls)
       }

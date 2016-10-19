@@ -2,7 +2,7 @@
   <li>
     <div
       :class="{bold: isFolder}"
-      @click="toggle">
+      @click="onClick">
       {{model.name}}
       <span v-if="isFolder">[{{open ? '-' : '+'}}]</span>
     </div>
@@ -10,7 +10,8 @@
       <item
         class="item"
         v-for="model in model.children"
-        :model="model">
+        :model="model"
+        @openFile="openFile">
       </item>
     </ul>
   </li>
@@ -22,7 +23,12 @@ export default {
   name: 'item',
   data () {
     return {
-      open: true
+      open: false
+    }
+  },
+  mounted () {
+    if (this.model.path === '/') {
+      this.open = true
     }
   },
   props: {
@@ -30,14 +36,18 @@ export default {
   },
   computed: {
     isFolder: function () {
-      return this.model.children &&
-        this.model.children.length
+      return this.model.type === 'directory'
     }
   },
   methods: {
-    toggle: function () {
+    openFile (path) {
+      this.$emit('openFile', path)
+    },
+    onClick: function () {
       if (this.isFolder) {
         this.open = !this.open
+      } else {
+        this.$emit('openFile', this.model.path)
       }
     }
   },
