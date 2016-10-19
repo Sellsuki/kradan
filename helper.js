@@ -28,7 +28,7 @@ let getDirJson = function (path) {
 
   _.forEachRight(list, (item) => {
     var info = {
-      path: item,
+      path: '/' + item,
       name: getName(item)
     }
     if (isDir(item)) {

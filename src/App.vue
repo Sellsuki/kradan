@@ -1,10 +1,16 @@
 <template lang="html">
-  <ul class="">
-    <item
-      class="item"
-      :model="list">
-    </item>
-  </ul>
+  <div class="">
+    <ul class="">
+      <item
+        class="item"
+        :model="list"
+        @openFile="openFile">
+      </item>
+    </ul>
+    <div class="">
+      {{ file }}
+    </div>
+  </div>
 </template>
 
 <script>
@@ -19,7 +25,8 @@ export default {
         name: 'Root',
         path: '/',
         children: []
-      }
+      },
+      file: ''
     }
   },
   computed: {},
@@ -34,6 +41,14 @@ export default {
     })
   },
   methods: {
+    openFile (path) {
+      let vm = this
+      this.$http.get('http://localhost:3000/files' + path).then((response) => {
+        vm.file = response.body
+      }, (response) => {
+        console.log(response)
+      })
+    }
   },
   components: {
     Item
@@ -43,7 +58,8 @@ export default {
 <style lang="css">
 body {
   font-family: Menlo, Consolas, monospace;
-  color: #444;
+  background-color: #202A2F;
+  color: #9AAEB7;
 }
 .item {
   cursor: pointer;
