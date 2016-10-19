@@ -1,10 +1,10 @@
 <template lang="html">
-  <div class="">
+  <ul class="">
     <item
       class="item"
       :model="list">
     </item>
-  </div>
+  </ul>
 </template>
 
 <script>
@@ -17,6 +17,7 @@ export default {
     return {
       list: {
         name: 'Root',
+        path: '/',
         children: []
       }
     }

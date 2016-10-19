@@ -22,7 +22,12 @@ export default {
   name: 'item',
   data () {
     return {
-      open: true
+      open: false
+    }
+  },
+  mounted () {
+    if (this.model.path === '/') {
+      this.open = true
     }
   },
   props: {
@@ -30,8 +35,7 @@ export default {
   },
   computed: {
     isFolder: function () {
-      return this.model.children &&
-        this.model.children.length
+      return this.model.children && this.model.children.length
     }
   },
   methods: {
