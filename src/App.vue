@@ -1,22 +1,26 @@
 <template lang="html">
-  <div class="">
-    <ul class="">
-      <item
-        class="item"
-        :model="list"
-        @openFile="openFile">
-      </item>
-    </ul>
-    <div class="">
-      {{ file }}
+  <section class="is-fullheight">
+    <div class="columns is-marginless is-gapless is-desktop">
+      <div class="column is-2-desktop">
+        <ul class="overflow-scroll">
+          <item
+            class="item"
+            :model="list"
+            @openFile="openFile">
+          </item>
+        </ul>
+      </div>
+      <div class="column is-10-desktop">
+        <codemirror :code="code" :options="editorOption"></codemirror>
+      </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script>
 /* global io */
 import Item from 'components/Item'
-// import hljs from 'highlight.js'
+import { codemirror } from 'vue-codemirror'
 
 export default {
   data () {
@@ -26,10 +30,19 @@ export default {
         path: '/',
         children: []
       },
-      file: ''
+      code: '',
+      editorOption: {
+        tabSize: 4,
+        mode: 'text/javascript',
+        theme: 'material',
+        lineNumbers: true,
+        line: true,
+        readOnly: true
+      }
     }
   },
-  computed: {},
+  computed: {
+  },
   mounted () {
     let vm = this
     var socket = io.connect('http://localhost:3000')
@@ -44,22 +57,35 @@ export default {
     openFile (path) {
       let vm = this
       this.$http.get('http://localhost:3000/files' + path).then((response) => {
-        vm.file = response.body
+        vm.code = response.body
       }, (response) => {
         console.log(response)
       })
     }
   },
   components: {
-    Item
+    Item,
+    codemirror
   }
 }
 </script>
-<style lang="css">
-body {
+<style lang="scss">
+$column-gap: 0px;
+@import '~bulma';
+
+html, body {
   font-family: Menlo, Consolas, monospace;
   background-color: #202A2F;
   color: #9AAEB7;
+}
+.overflow-scroll {
+  height: 100vh;
+  max-height: 100vh;
+  -webkit-overflow-scrolling: touch;
+  overflow: scroll;
+}
+.CodeMirror {
+  height: 100vh !important;
 }
 .item {
   cursor: pointer;

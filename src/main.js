@@ -2,8 +2,10 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
+import CodeMirror from 'vue-codemirror'
 
 Vue.use(require('vue-resource'))
+Vue.use(CodeMirror)
 
 /* eslint-disable no-new */
 new Vue({
