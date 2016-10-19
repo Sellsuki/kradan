@@ -33,7 +33,7 @@ export default {
       code: '',
       editorOption: {
         tabSize: 2,
-        mode: 'script/x-vue',
+        mode: 'text/javascript',
         theme: 'material',
         lineNumbers: true,
         line: true,
@@ -56,6 +56,24 @@ export default {
   methods: {
     openFile (path) {
       let vm = this
+      // TODO : Fix editorOption.mode not reactive
+      let ext = path.split('.').pop()
+      switch (ext) {
+        case 'vue':
+          vm.editorOption.mode = 'script/x-vue'
+          break
+        case 'html':
+          vm.editorOption.mode = 'text/html'
+          break
+        case 'md':
+          vm.editorOption.mode = 'text/x-markdown'
+          break
+        case 'jsx':
+          vm.editorOption.mode = 'text/jsx'
+          break
+        default:
+          vm.editorOption.mode = 'text/javascript'
+      }
       this.$http.get('http://localhost:3000/files' + path).then((response) => {
         vm.code = response.body
       }, (response) => {
@@ -77,6 +95,7 @@ html, body {
   font-family: Menlo, Consolas, monospace;
   background-color: #202A2F;
   color: #9AAEB7;
+  font-size: 18px;
 }
 .overflow-scroll {
   height: 100vh;
