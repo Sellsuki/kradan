@@ -53,15 +53,19 @@ export default {
     socket.on('change', function (path) {
       console.log('change ' + path)
       if (vm.currentOpenFilePath === path) {
-        vm.$http.get('/files' + path).then((response) => {
-          vm.code = response.body
-        }, (response) => {
-          console.log(response)
-        })
+        vm.getFile(path)
       }
     })
   },
   methods: {
+    getFile (path) {
+      let vm = this
+      vm.$http.get('/files' + path).then((response) => {
+        vm.code = response.body
+      }, (response) => {
+        console.log(response)
+      })
+    },
     openFile (path) {
       let vm = this
       vm.currentOpenFilePath = path
@@ -83,11 +87,7 @@ export default {
         default:
           vm.editorOption.mode = 'text/javascript'
       }
-      vm.$http.get('/files' + path).then((response) => {
-        vm.code = response.body
-      }, (response) => {
-        console.log(response)
-      })
+      vm.getFile(path)
     }
   },
   components: {
