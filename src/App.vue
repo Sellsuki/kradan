@@ -46,14 +46,14 @@ export default {
   },
   mounted () {
     let vm = this
-    var socket = io.connect('http://localhost:3000')
+    var socket = io.connect()
     socket.on('list', function (list) {
       vm.list = list
     })
     socket.on('change', function (path) {
       console.log('change ' + path)
       if (vm.currentOpenFilePath === path) {
-        vm.$http.get('http://localhost:3000/files' + path).then((response) => {
+        vm.$http.get('/files' + path).then((response) => {
           vm.code = response.body
         }, (response) => {
           console.log(response)

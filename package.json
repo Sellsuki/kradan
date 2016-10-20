@@ -12,7 +12,8 @@
     "build": "node build/build.js",
     "unit": "karma start test/unit/karma.conf.js --single-run",
     "test": "npm run unit",
-    "lint": "eslint --ext .js,.vue src test/unit/specs"
+    "lint": "eslint --ext .js,.vue src test/unit/specs",
+    "publish": "npm version patch && npm run build && npm publish"
   },
   "dependencies": {
     "bulma": "^0.2.3",
