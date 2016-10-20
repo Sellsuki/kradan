@@ -13,7 +13,7 @@
     "unit": "karma start test/unit/karma.conf.js --single-run",
     "test": "npm run unit",
     "lint": "eslint --ext .js,.vue src test/unit/specs",
-    "deploy": "npm run build && git add -A && git commit -m 'before deploy' && npm version patch && git add -A && git commit -m deploy && git push && npm publish"
+    "deploy": "npm run build && git add -A && git commit -m prepare && npm version patch && git add -A && git commit -m deploy && git push && npm publish"
   },
   "dependencies": {
     "bulma": "^0.2.3",
