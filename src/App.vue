@@ -83,7 +83,7 @@ export default {
         default:
           vm.editorOption.mode = 'text/javascript'
       }
-      vm.$http.get('http://localhost:3000/files' + path).then((response) => {
+      vm.$http.get('/files' + path).then((response) => {
         vm.code = response.body
       }, (response) => {
         console.log(response)
