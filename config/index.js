@@ -24,7 +24,7 @@ module.exports = {
     proxyTable: {
       '/files': 'http://127.0.0.1:1112',
       '/ls': 'http://127.0.0.1:1112',
-      '/': {target:'http://127.0.0.1:1112', ws:true}
+      '/socket.io': {target:'ws://127.0.0.1:1112', ws:true}
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README

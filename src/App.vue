@@ -2,6 +2,7 @@
   <section class="is-fullheight">
     <div class="columns is-marginless is-gapless is-desktop">
       <div class="column is-2-desktop">
+        <button @click="test">test</button>
         <ul class="overflow-scroll">
           <item
             class="item"
@@ -58,6 +59,9 @@ export default {
     })
   },
   methods: {
+    test () {
+      this.editorOption.lineNumbers = false
+    },
     getFile (path) {
       let vm = this
       vm.$http.get('/files' + path).then((response) => {
