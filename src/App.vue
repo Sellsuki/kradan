@@ -65,7 +65,7 @@ export default {
     openFile (path) {
       let vm = this
       vm.currentOpenFilePath = path
-      // TODO : Fix editorOption.mode not reactive
+      // TODO :  Fix editorOption.mode not reactive
       let ext = path.split('.').pop()
       switch (ext) {
         case 'vue':
