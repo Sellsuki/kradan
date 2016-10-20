@@ -30,11 +30,14 @@ export default {
 
 <style lang="css">
 .image-container {
-  width: 100%;
-  height: 100vh;
-  background: #f00;
+  text-align: center;
+  border-radius: 3px;
+  margin: 20px;
   padding: 30px;
   background-color: white;
   background-image: url("../assets/transparent-background.png")
+}
+img {
+  max-height: 80vh;
 }
 </style>
