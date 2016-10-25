@@ -10,8 +10,11 @@
           </item>
         </ul>
       </div>
-      <div class="column is-10-desktop">
-        <codemirror :code="code" :options="editorOption"></codemirror>
+      <div class="column is-10-desktop is-editor">
+        <div v-for="openFile in openFiles" v-show="currentOpenFilePath === openFile.path">
+          <viewer :info="openFile"></viewer>
+          <!-- <codemirror :code="openFile.code" :options="openFile.editorOption"></codemirror> -->
+        </div>
       </div>
     </div>
   </section>
@@ -20,7 +23,7 @@
 <script>
 /* global io */
 import Item from 'components/Item'
-import { codemirror } from 'vue-codemirror'
+import Viewer from 'components/Viewer'
 
 export default {
   data () {
@@ -31,15 +34,7 @@ export default {
         children: []
       },
       currentOpenFilePath: '',
-      code: '',
-      editorOption: {
-        tabSize: 2,
-        mode: 'text/javascript',
-        theme: 'material',
-        lineNumbers: true,
-        line: true,
-        readOnly: true
-      }
+      openFiles: []
     }
   },
   computed: {
@@ -52,7 +47,8 @@ export default {
     })
     socket.on('change', function (path) {
       console.log('change ' + path)
-      if (vm.currentOpenFilePath === path) {
+      let fileChanged = vm.openFiles.find(file => file.path === path)
+      if (fileChanged) {
         vm.getFile(path)
       }
     })
@@ -61,7 +57,43 @@ export default {
     getFile (path) {
       let vm = this
       vm.$http.get('/files' + path).then((response) => {
-        vm.code = response.body
+        let newFile = {
+          path: path,
+          code: '',
+          editorOption: {
+            tabSize: 2,
+            mode: 'text/javascript',
+            theme: 'material',
+            lineNumbers: true,
+            line: true,
+            readOnly: true
+          }
+        }
+        let ext = path.split('.').pop()
+        switch (ext) {
+          case 'vue':
+            newFile.editorOption.mode = 'script/x-vue'
+            break
+          case 'html':
+            newFile.editorOption.mode = 'text/html'
+            break
+          case 'md':
+            newFile.editorOption.mode = 'text/x-markdown'
+            break
+          case 'jsx':
+            newFile.editorOption.mode = 'text/jsx'
+            break
+          default:
+            newFile.editorOption.mode = 'text/javascript'
+        }
+
+        let fileChanged = vm.openFiles.find(file => file.path === path)
+        if (fileChanged) {
+          fileChanged.code = response.body
+        } else {
+          newFile.code = response.body
+          vm.openFiles.push(newFile)
+        }
       }, (response) => {
         console.log(response)
       })
@@ -69,30 +101,14 @@ export default {
     openFile (path) {
       let vm = this
       vm.currentOpenFilePath = path
-      // TODO :  Fix editorOption.mode not reactive
-      let ext = path.split('.').pop()
-      switch (ext) {
-        case 'vue':
-          vm.editorOption.mode = 'script/x-vue'
-          break
-        case 'html':
-          vm.editorOption.mode = 'text/html'
-          break
-        case 'md':
-          vm.editorOption.mode = 'text/x-markdown'
-          break
-        case 'jsx':
-          vm.editorOption.mode = 'text/jsx'
-          break
-        default:
-          vm.editorOption.mode = 'text/javascript'
+      if (!vm.openFiles.find(file => file.path === path)) {
+        vm.getFile(path)
       }
-      vm.getFile(path)
     }
   },
   components: {
     Item,
-    codemirror
+    Viewer
   }
 }
 </script>
@@ -111,6 +127,10 @@ html, body {
   max-height: 100vh;
   -webkit-overflow-scrolling: touch;
   overflow: scroll;
+}
+.is-editor {
+  background-color: #263238;
+  border-left: 1px solid #171E22;
 }
 .CodeMirror {
   height: 100vh !important;

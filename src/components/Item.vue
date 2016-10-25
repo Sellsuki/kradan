@@ -18,7 +18,6 @@
 </template>
 
 <script>
-import Item from './Item'
 export default {
   name: 'item',
   data () {
@@ -50,8 +49,7 @@ export default {
         this.$emit('openFile', this.model.path)
       }
     }
-  },
-  components: {Item}
+  }
 }
 </script>
 
