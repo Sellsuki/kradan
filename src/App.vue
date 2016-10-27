@@ -144,7 +144,7 @@ export default {
 
 <style lang="scss">
 html, body {
-  font-family: Menlo,Monaco,Consolas,Courier New,monospace!important;
+  // font-family: Menlo,Monaco,Consolas,Courier New,monospace!important;
   background-color: #202A2F;
   color: #9AAEB7;
   font-size: 18px;
@@ -162,6 +162,8 @@ html, body {
     display: inline-block;
     width: 20vw;
     height: 100vh;
+    font-family: 'BlinkMacSystemFont', 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
+    font-size: 14px;
   }
   .right {
     float: right;
@@ -188,6 +190,9 @@ html, body {
         overflow: hidden;
         padding-right: 10px;
         cursor: pointer;
+        user-select: none;
+        font-family: 'BlinkMacSystemFont', 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
+        font-size: 14px;
         &:hover {
           color: #ccc;
         }
@@ -229,7 +234,7 @@ html, body {
   font-weight: bold;
 }
 ul {
-  padding-left: 1em;
+  padding-left: 1.2em;
   line-height: 1.5em;
   list-style-type: dot;
   white-space: nowrap;

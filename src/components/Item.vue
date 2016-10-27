@@ -1,7 +1,6 @@
 <template lang="html">
   <li>
     <div
-      :class="{bold: isFolder}"
       @click="onClick">
       <span v-if="isFolder">{{open ? '▼' : '▶'}}</span>
       {{model.name}}
