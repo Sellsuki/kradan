@@ -11,9 +11,9 @@
     </div>
     <div class="right">
       <div class="tabs">
-        <div class="tabs-tab" v-for="file in openFiles" :class="{'is-active': currentOpenFilePath === file.path}" @click="openFile(file.path)">
+        <div class="tabs-tab" v-for="file in openFiles" :class="{'is-active': currentOpenFilePath === file.path}" @click.self="openFile(file.path)">
           {{file.name}}
-          <span class="icon" @click="" style="float: right;">
+          <span class="icon" @click="closeFile(file.path)" style="float: right;">
             <i class="fa fa-close" aria-hidden="true"></i>
           </span>
         </div>
@@ -127,11 +127,8 @@ export default {
       }
       return style
     },
-    closeFile: function (File) {
-      if (File.path === this.currentOpenFilePath) {
-        this.currentOpenFilePath = ''
-      }
-      var index = this.openFiles.findIndex(file => file.path === File.path)
+    closeFile: function (path) {
+      var index = this.openFiles.findIndex(file => file.path === path)
       this.openFiles.splice(index, 1)
     }
   },
