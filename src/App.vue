@@ -102,13 +102,9 @@ export default {
           fileChanged.code = response.body
         } else {
           newFile.code = response.body
-          vm.openFiles.push(newFile)
-          // if (this.openFiles.length === 6) {
-          //   var index = this.openFiles.findIndex(file => file.path === this.currentOpenFilePath)
-          //   this.openFiles.splice(index, 1, newFile)
-          // } else {
-          //   vm.openFiles.push(newFile)
-          // }
+          var index = vm.openFiles.findIndex(file => file.path === vm.currentOpenFilePath)
+          vm.openFiles.splice(index + 1, 0, newFile)
+          vm.currentOpenFilePath = path
         }
       }, (response) => {
         console.log(response)
@@ -116,9 +112,10 @@ export default {
     },
     openFile (path) {
       let vm = this
-      vm.currentOpenFilePath = path
       if (!vm.openFiles.find(file => file.path === path)) {
         vm.getFile(path)
+      } else {
+        vm.currentOpenFilePath = path
       }
     },
     title: function (checkStyle) {
