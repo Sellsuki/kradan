@@ -131,7 +131,11 @@ export default {
       this.openFiles.splice(index, 1)
       if (this.currentOpenFilePath === path) {
         let newIndex = (index <= 0) ? index : index - 1
-        this.currentOpenFilePath = this.openFiles[newIndex].path
+        if (this.openFiles.length === 0) {
+          this.currentOpenFilePath = ''
+        } else {
+          this.currentOpenFilePath = this.openFiles[newIndex].path
+        }
       }
     }
   },
@@ -211,7 +215,6 @@ html, body {
       }
     }
     .item-views {
-      background: #263238;
       display: block;
       height: 100%;
       border-top: 1px solid #171E22;
