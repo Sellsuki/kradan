@@ -1,7 +1,7 @@
 <template lang="html">
   <div>
-    <codemirror v-if="type !== 'png'" :code="info.code" :options="info.editorOption"></codemirror>
-    <div v-if="type === 'png'" class="image-container">
+    <codemirror v-if="!isImage" :code="info.code" :options="info.editorOption"></codemirror>
+    <div v-if="isImage" class="image-container">
       <img :src="'files/' + info.path" alt="" />
     </div>
   </div>
@@ -16,8 +16,18 @@ export default {
   },
   props: ['info'],
   computed: {
-    type () {
-      return this.info.path.split('.').pop()
+    isImage () {
+      let type = this.info.path.split('.').pop()
+      switch (type.toUpperCase()) {
+        case 'PNG':
+        case 'JPG':
+        case 'JPEG':
+        case 'ICO':
+        case 'SVG':
+        case 'GIF':
+          return true
+      }
+      return false
     }
   },
   mounted () {},
