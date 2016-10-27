@@ -11,11 +11,7 @@
     </div>
     <div class="right">
       <div class="tabs">
-        <div
-          class="tabs-tab"
-          v-for="file in openFiles"
-          :class="{'is-active': currentOpenFilePath === file.path}"
-          @click="openFile(file.path)">
+        <div class="tabs-tab" v-for="file in openFiles" :class="{'is-active': currentOpenFilePath === file.path}" @click="openFile(file.path)">
           {{file.name}}
           <span class="icon" @click="" style="float: right;">
             <i class="fa fa-close" aria-hidden="true"></i>
@@ -78,6 +74,7 @@ export default {
             mode: 'text/javascript',
             theme: 'material',
             lineNumbers: true,
+            lineWrapping: true,
             line: true,
             readOnly: true
           }
