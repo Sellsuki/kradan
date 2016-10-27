@@ -38,7 +38,7 @@ export default {
   background-image: url("../assets/transparent-background.png");
 }
 img {
-  max-height:100%;
+  max-height: 80vh;
   max-width: 100%;
 }
 </style>
