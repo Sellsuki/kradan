@@ -1,6 +1,5 @@
 <template lang="html">
   <div>
-    <h1>{{info.path}}</h1>
     <codemirror v-if="type !== 'png'" :code="info.code" :options="info.editorOption"></codemirror>
     <div v-if="type === 'png'" class="image-container">
       <img :src="'files/' + info.path" alt="" />
