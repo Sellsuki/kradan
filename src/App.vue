@@ -19,8 +19,8 @@
         </div>
       </div>
       <div class="item-views">
-        <div v-for="openFile in openFiles" v-show="currentOpenFilePath === openFile.path">
-          <viewer :info="openFile"></viewer>
+        <div v-for="openFile in openFiles">
+          <viewer v-if="currentOpenFilePath === openFile.path" :info="openFile"></viewer>
         </div>
       </div>
     </div>
@@ -102,12 +102,13 @@ export default {
           fileChanged.code = response.body
         } else {
           newFile.code = response.body
-          if (this.openFiles.length === 6) {
-            var index = this.openFiles.findIndex(file => file.path === this.currentOpenFilePath)
-            this.openFiles.splice(index, 1, newFile)
-          } else {
-            vm.openFiles.push(newFile)
-          }
+          vm.openFiles.push(newFile)
+          // if (this.openFiles.length === 6) {
+          //   var index = this.openFiles.findIndex(file => file.path === this.currentOpenFilePath)
+          //   this.openFiles.splice(index, 1, newFile)
+          // } else {
+          //   vm.openFiles.push(newFile)
+          // }
         }
       }, (response) => {
         console.log(response)
@@ -130,6 +131,10 @@ export default {
     closeFile: function (path) {
       var index = this.openFiles.findIndex(file => file.path === path)
       this.openFiles.splice(index, 1)
+      if (this.currentOpenFilePath === path) {
+        let newIndex = (index <= 0) ? index : index - 1
+        this.currentOpenFilePath = this.openFiles[newIndex].path
+      }
     }
   },
   components: {
