@@ -16,7 +16,6 @@
     "deploy": "npm run build && git add -A && git commit -m prepare && npm version patch && npm publish"
   },
   "dependencies": {
-    "bulma": "^0.2.3",
     "chokidar": "^1.6.0",
     "express": "^4.14.0",
     "lodash": "^4.16.4",
