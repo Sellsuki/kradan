@@ -173,17 +173,16 @@ html, body {
       display: block;
       width: auto;
       height: 40px;
-      // padding-top: 8px;
       overflow-x: auto;
       margin: 0px;
       margin-left: -1.2em;
+      padding-right: 11px;
       &::-webkit-scrollbar {
         display: none;
       }
       .tabs-tab {
         display: inline-block;
         box-sizing: border-box;
-        // float: left;
         height: 40px;
         line-height: 40px;
         width: 20%;
