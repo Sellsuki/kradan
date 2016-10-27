@@ -1,23 +1,30 @@
 <template lang="html">
-  <section class="is-fullheight">
-    <div class="columns is-marginless is-gapless is-desktop">
-      <div class="column is-2-desktop">
-        <ul class="overflow-scroll">
-          <item
-            class="item"
-            :model="list"
-            @openFile="openFile">
-          </item>
-        </ul>
-      </div>
-      <div class="column is-10-desktop is-editor">
-        <div v-for="openFile in openFiles" v-show="currentOpenFilePath === openFile.path">
-          <viewer :info="openFile"></viewer>
-          <!-- <codemirror :code="openFile.code" :options="openFile.editorOption"></codemirror> -->
+  <div class="app">
+    <div class="left">
+      <ul class="overflow-scroll">
+        <item
+          class="item"
+          :model="list"
+          @openFile="openFile">
+        </item>
+      </ul>
+    </div>
+    <div class="right">
+      <div class="menuFile">
+        <div :class="title(currentOpenFilePath === File.path)" v-for="File in openFiles" @click="openFile(File.path)">
+          {{File.name}}
+          <!-- <span class="icon" @click="closeFile(File)"> -->
+          <span class="icon" @click="">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </span>
         </div>
       </div>
+      <div v-for="openFile in openFiles" v-show="currentOpenFilePath === openFile.path">
+        <viewer :info="openFile"></viewer>
+          <!-- <codemirror :code="openFile.code" :options="openFile.editorOption"></codemirror> -->
+      </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <script>
@@ -57,7 +64,9 @@ export default {
     getFile (path) {
       let vm = this
       vm.$http.get('/files' + path).then((response) => {
+        let name = path.split('/').pop()
         let newFile = {
+          name: name,
           path: path,
           code: '',
           editorOption: {
@@ -92,7 +101,12 @@ export default {
           fileChanged.code = response.body
         } else {
           newFile.code = response.body
-          vm.openFiles.push(newFile)
+          if (this.openFiles.length === 6) {
+            var index = this.openFiles.findIndex(file => file.path === this.currentOpenFilePath)
+            this.openFiles.splice(index, 1, newFile)
+          } else {
+            vm.openFiles.push(newFile)
+          }
         }
       }, (response) => {
         console.log(response)
@@ -104,6 +118,20 @@ export default {
       if (!vm.openFiles.find(file => file.path === path)) {
         vm.getFile(path)
       }
+    },
+    title: function (checkStyle) {
+      var style = 'fileTitle'
+      if (checkStyle) {
+        style = 'fileTitleSelect'
+      }
+      return style
+    },
+    closeFile: function (File) {
+      if (File.path === this.currentOpenFilePath) {
+        this.currentOpenFilePath = ''
+      }
+      var index = this.openFiles.findIndex(file => file.path === File.path)
+      this.openFiles.splice(index, 1)
     }
   },
   components: {
@@ -113,14 +141,53 @@ export default {
 }
 </script>
 <style lang="scss">
-$column-gap: 0px;
-@import '~bulma';
-
 html, body {
   font-family: Menlo,Monaco,Consolas,Courier New,monospace!important;
   background-color: #202A2F;
   color: #9AAEB7;
   font-size: 18px;
+  overflow: hidden;
+}
+.app {
+}
+.left {
+  display: inline-block;
+  overflow: auto;
+  width: 15%;
+  -webkit-box-sizing:border-box;
+   -moz-box-sizing:border-box;
+   box-sizing:border-box;
+}
+.right {
+  display: inline-block;
+  width: 80%;
+  -webkit-box-sizing:border-box;
+   -moz-box-sizing:border-box;
+   box-sizing:border-box;
+}
+.menuFile {
+  background-color: #202A2F;
+  height: 3em;
+  line-height: 3em;
+  padding: 0;
+  margin: 0;
+  cursor: default;
+  display: flex;
+}
+.fileTitle {
+  width: 290px;
+  border-right: solid #181a1f 1px;
+  border-bottom: solid #181a1f 1px;
+  text-align: center;
+  color: #666c77;
+}
+.fileTitleSelect {
+  width: 290px;
+  border-top: solid #181a1f 1px;
+  border-right: solid #181a1f 1px;
+  border-left: 2px #528bff solid;
+  background-color: #26333b;
+  text-align: center;
 }
 .overflow-scroll {
   height: 100vh;
