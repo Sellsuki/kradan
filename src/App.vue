@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="app">
     <div class="left">
-      <ul class="overflow-scroll">
+      <ul>
         <item
           class="item"
           :model="list"
@@ -11,14 +11,14 @@
       </ul>
     </div>
     <div class="right">
-      <div class="tabs">
-        <div class="tabs-tab" v-for="file in openFiles" :class="{'is-active': currentOpenFilePath === file.path}" @click.self="openFile(file.path)">
+      <ul class="tabs">
+        <li class="tabs-tab" v-for="file in openFiles" :class="{'is-active': currentOpenFilePath === file.path}" @click.self="openFile(file.path)">
           {{file.name}}
           <span class="icon" @click="closeFile(file.path)" style="float: right;">
             <i class="fa fa-close" aria-hidden="true"></i>
           </span>
-        </div>
-      </div>
+        </li>
+      </ul>
       <div class="item-views">
         <div v-for="openFile in openFiles">
           <viewer v-if="currentOpenFilePath === openFile.path" :info="openFile"></viewer>
@@ -168,16 +168,22 @@ html, body {
     display: inline-block;
     width: 80vw;
     height: 100vh;
+    padding-top: 8px;
     .tabs {
       display: block;
-      width: 100%;
+      width: auto;
       height: 40px;
-      padding-top: 8px;
-      overflow: hidden;
+      // padding-top: 8px;
+      overflow-x: auto;
+      margin: 0px;
+      margin-left: -1.2em;
+      &::-webkit-scrollbar {
+        display: none;
+      }
       .tabs-tab {
         display: inline-block;
         box-sizing: border-box;
-        float: left;
+        // float: left;
         height: 40px;
         line-height: 40px;
         width: 20%;
@@ -216,17 +222,12 @@ html, body {
     }
   }
 }
-.overflow-scroll {
-  height: 100vh;
-  max-height: 100vh;
-  -webkit-overflow-scrolling: touch;
-  overflow: scroll;
-}
 .CodeMirror {
   height: calc(100vh - 48px) !important;
 }
 .item {
   cursor: pointer;
+  user-select: none;
 }
 .bold {
   font-weight: bold;
@@ -234,7 +235,6 @@ html, body {
 ul {
   padding-left: 1.2em;
   line-height: 1.5em;
-  list-style-type: dot;
   white-space: nowrap;
 }
 li {
