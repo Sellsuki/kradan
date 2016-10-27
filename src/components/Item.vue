@@ -1,5 +1,5 @@
 <template lang="html">
-  <li>
+  <li :class="{'is-active': currentOpenFilePath === model.path}">
     <div
       @click="onClick">
       <span v-if="isFolder">{{open ? '▼' : '▶'}}</span>
@@ -10,6 +10,7 @@
         class="item"
         v-for="model in model.children"
         :model="model"
+        :currentOpenFilePath="currentOpenFilePath"
         @openFile="openFile">
       </item>
     </ul>
@@ -30,7 +31,8 @@ export default {
     }
   },
   props: {
-    model: Object
+    model: Object,
+    currentOpenFilePath: String
   },
   computed: {
     isFolder: function () {

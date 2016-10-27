@@ -5,6 +5,7 @@
         <item
           class="item"
           :model="list"
+          :currentOpenFilePath="currentOpenFilePath"
           @openFile="openFile">
         </item>
       </ul>
@@ -193,15 +194,15 @@ html, body {
         &:hover {
           color: #ccc;
         }
-      }
-      .is-active {
-        background: #263238;
-        border-radius: 3px 3px 0px 0px;
-        border-left: 2px solid #58C6FC;
-        border-right: 1px solid #171E22;
-        border-top: 1px solid #171E22;
-        border-bottom: 1px solid #263238;
-        color: #ccc;
+        &.is-active {
+          background: #263238;
+          border-radius: 3px 3px 0px 0px;
+          border-left: 2px solid #58C6FC;
+          border-right: 1px solid #171E22;
+          border-top: 1px solid #171E22;
+          border-bottom: 1px solid #263238;
+          color: #ccc;
+        }
       }
     }
     .item-views {
@@ -238,5 +239,8 @@ ul {
 }
 li {
   list-style-type: none;
+  &.is-active {
+    color: #EAB877;
+  }
 }
 </style>
