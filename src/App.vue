@@ -13,7 +13,7 @@
     <div class="right">
       <ul class="tabs">
         <li class="tabs-tab" v-for="file in openFiles" :class="{'is-active': currentOpenFilePath === file.path}" @click.self="openFile(file.path)">
-          {{file.name}}
+          <span class="tabs-tab-name" @click.self="openFile(file.path)">{{file.name}}</span>
           <span class="icon" @click="closeFile(file.path)" style="float: right;">
             <i class="fa fa-close" aria-hidden="true"></i>
           </span>
@@ -131,7 +131,11 @@ export default {
       this.openFiles.splice(index, 1)
       if (this.currentOpenFilePath === path) {
         let newIndex = (index <= 0) ? index : index - 1
-        this.currentOpenFilePath = this.openFiles[newIndex].path
+        if (this.openFiles.length === 0) {
+          this.currentOpenFilePath = ''
+        } else {
+          this.currentOpenFilePath = this.openFiles[newIndex].path
+        }
       }
     }
   },
@@ -174,20 +178,20 @@ html, body {
       width: auto;
       height: 40px;
       overflow-x: auto;
+      overflow-y: hidden;
       margin: 0px;
-      margin-left: -1.2em;
-      padding-right: 11px;
+      padding-left: 0px;
+      padding-right: 10px;
       &::-webkit-scrollbar {
         display: none;
       }
       .tabs-tab {
+        margin: 0px;
         display: inline-block;
         box-sizing: border-box;
         height: 40px;
         line-height: 40px;
-        width: 20%;
-        max-width: 200px;
-        min-width: 150px;
+        width: 200px;
         text-align: center;
         color: #666c77;
         overflow: hidden;
@@ -208,10 +212,15 @@ html, body {
           border-bottom: 1px solid #263238;
           color: #ccc;
         }
+        .tabs-tab-name {
+          width: 160px;
+          display: inline-block;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       }
     }
     .item-views {
-      background: #263238;
       display: block;
       height: 100%;
       border-top: 1px solid #171E22;
