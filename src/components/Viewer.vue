@@ -35,9 +35,10 @@ export default {
   margin: 20px;
   padding: 30px;
   background-color: white;
-  background-image: url("../assets/transparent-background.png")
+  background-image: url("../assets/transparent-background.png");
 }
 img {
-  max-height: 80vh;
+  max-height:100%;
+  max-width: 100%;
 }
 </style>
