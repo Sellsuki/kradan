@@ -178,13 +178,15 @@ html, body {
       width: auto;
       height: 40px;
       overflow-x: auto;
+      overflow-y: hidden;
       margin: 0px;
-      margin-left: -1.2em;
-      padding-right: 11px;
+      padding-left: 0px;
+      padding-right: 10px;
       &::-webkit-scrollbar {
         display: none;
       }
       .tabs-tab {
+        margin: 0px;
         display: inline-block;
         box-sizing: border-box;
         height: 40px;
