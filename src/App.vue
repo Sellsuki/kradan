@@ -13,7 +13,7 @@
     <div class="right">
       <ul class="tabs">
         <li class="tabs-tab" v-for="file in openFiles" :class="{'is-active': currentOpenFilePath === file.path}" @click.self="openFile(file.path)">
-          {{file.name}}
+          <span class="tabs-tab-name" @click.self="openFile(file.path)">{{file.name}}</span>
           <span class="icon" @click="closeFile(file.path)" style="float: right;">
             <i class="fa fa-close" aria-hidden="true"></i>
           </span>
@@ -191,9 +191,7 @@ html, body {
         box-sizing: border-box;
         height: 40px;
         line-height: 40px;
-        width: 20%;
-        max-width: 200px;
-        min-width: 150px;
+        width: 200px;
         text-align: center;
         color: #666c77;
         overflow: hidden;
@@ -213,6 +211,12 @@ html, body {
           border-top: 1px solid #171E22;
           border-bottom: 1px solid #263238;
           color: #ccc;
+        }
+        .tabs-tab-name {
+          width: 160px;
+          display: inline-block;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
       }
     }
