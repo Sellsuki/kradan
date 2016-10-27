@@ -10,18 +10,22 @@
       </ul>
     </div>
     <div class="right">
-      <div class="menuFile">
-        <div :class="title(currentOpenFilePath === File.path)" v-for="File in openFiles" @click="openFile(File.path)">
-          {{File.name}}
-          <!-- <span class="icon" @click="closeFile(File)"> -->
-          <span class="icon" @click="">
-            <i class="fa fa-times" aria-hidden="true"></i>
+      <div class="tabs">
+        <div
+          class="tabs-tab"
+          v-for="file in openFiles"
+          :class="{'is-active': currentOpenFilePath === file.path}"
+          @click="openFile(file.path)">
+          {{file.name}}
+          <span class="icon" @click="" style="float: right;">
+            <i class="fa fa-close" aria-hidden="true"></i>
           </span>
         </div>
       </div>
-      <div v-for="openFile in openFiles" v-show="currentOpenFilePath === openFile.path">
-        <viewer :info="openFile"></viewer>
-          <!-- <codemirror :code="openFile.code" :options="openFile.editorOption"></codemirror> -->
+      <div class="item-views">
+        <div v-for="openFile in openFiles" v-show="currentOpenFilePath === openFile.path">
+          <viewer :info="openFile"></viewer>
+        </div>
       </div>
     </div>
   </div>
@@ -140,6 +144,7 @@ export default {
   }
 }
 </script>
+
 <style lang="scss">
 html, body {
   font-family: Menlo,Monaco,Consolas,Courier New,monospace!important;
@@ -147,47 +152,69 @@ html, body {
   color: #9AAEB7;
   font-size: 18px;
   overflow: hidden;
-}
-.app {
-}
-.left {
-  display: inline-block;
-  overflow: auto;
-  width: 15%;
-  -webkit-box-sizing:border-box;
-   -moz-box-sizing:border-box;
-   box-sizing:border-box;
-}
-.right {
-  display: inline-block;
-  width: 80%;
-  -webkit-box-sizing:border-box;
-   -moz-box-sizing:border-box;
-   box-sizing:border-box;
-}
-.menuFile {
-  background-color: #202A2F;
-  height: 3em;
-  line-height: 3em;
-  padding: 0;
   margin: 0;
-  cursor: default;
-  display: flex;
+  padding: 0;
 }
-.fileTitle {
-  width: 290px;
-  border-right: solid #181a1f 1px;
-  border-bottom: solid #181a1f 1px;
-  text-align: center;
-  color: #666c77;
-}
-.fileTitleSelect {
-  width: 290px;
-  border-top: solid #181a1f 1px;
-  border-right: solid #181a1f 1px;
-  border-left: 2px #528bff solid;
-  background-color: #26333b;
-  text-align: center;
+
+.app {
+  background: #FFF;
+  height: 100vh;
+  background: #202A2F;
+  .left {
+    overflow: auto;
+    display: inline-block;
+    width: 20vw;
+    height: 100vh;
+  }
+  .right {
+    float: right;
+    display: inline-block;
+    width: 80vw;
+    height: 100vh;
+    .tabs {
+      display: block;
+      width: 100%;
+      height: 40px;
+      padding-top: 8px;
+      overflow: hidden;
+      .tabs-tab {
+        display: inline-block;
+        box-sizing: border-box;
+        float: left;
+        height: 40px;
+        line-height: 40px;
+        width: 20%;
+        max-width: 200px;
+        min-width: 150px;
+        text-align: center;
+        color: #666c77;
+        overflow: hidden;
+        padding-right: 10px;
+        cursor: pointer;
+        &:hover {
+          color: #ccc;
+        }
+      }
+      .is-active {
+        background: #263238;
+        border-radius: 3px 3px 0px 0px;
+        border-left: 2px solid #58C6FC;
+        border-right: 1px solid #171E22;
+        border-top: 1px solid #171E22;
+        border-bottom: 1px solid #263238;
+        color: #ccc;
+      }
+    }
+    .item-views {
+      background: #263238;
+      display: block;
+      height: 100%;
+      border-top: 1px solid #171E22;
+      border-left: 1px solid #171E22;
+      border-right: 1px solid #171E22;
+      margin-right: 10px;
+    }
+  }
 }
 .overflow-scroll {
   height: 100vh;
@@ -195,12 +222,8 @@ html, body {
   -webkit-overflow-scrolling: touch;
   overflow: scroll;
 }
-.is-editor {
-  background-color: #263238;
-  border-left: 1px solid #171E22;
-}
 .CodeMirror {
-  height: 100vh !important;
+  height: calc(100vh - 48px) !important;
 }
 .item {
   cursor: pointer;
@@ -213,5 +236,8 @@ ul {
   line-height: 1.5em;
   list-style-type: dot;
   white-space: nowrap;
+}
+li {
+  list-style-type: none;
 }
 </style>
