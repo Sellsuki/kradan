@@ -141,10 +141,8 @@ export default {
 
 <style lang="scss">
 html, body {
-  // font-family: Menlo,Monaco,Consolas,Courier New,monospace!important;
   background-color: #202A2F;
   color: #9AAEB7;
-  font-size: 18px;
   overflow: hidden;
   margin: 0;
   padding: 0;
