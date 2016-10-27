@@ -1,23 +1,30 @@
 <template lang="html">
-  <section class="is-fullheight">
-    <div class="columns is-marginless is-gapless is-desktop">
-      <div class="column is-2-desktop">
-        <ul class="overflow-scroll">
-          <item
-            class="item"
-            :model="list"
-            @openFile="openFile">
-          </item>
-        </ul>
+  <div class="app">
+    <div class="left">
+      <ul class="overflow-scroll">
+        <item
+          class="item"
+          :model="list"
+          @openFile="openFile">
+        </item>
+      </ul>
+    </div>
+    <div class="right">
+      <div class="tabs">
+        <div class="tabs-tab" v-for="file in openFiles" :class="{'is-active': currentOpenFilePath === file.path}" @click.self="openFile(file.path)">
+          {{file.name}}
+          <span class="icon" @click="closeFile(file.path)" style="float: right;">
+            <i class="fa fa-close" aria-hidden="true"></i>
+          </span>
+        </div>
       </div>
-      <div class="column is-10-desktop is-editor">
+      <div class="item-views">
         <div v-for="openFile in openFiles" v-show="currentOpenFilePath === openFile.path">
           <viewer :info="openFile"></viewer>
-          <!-- <codemirror :code="openFile.code" :options="openFile.editorOption"></codemirror> -->
         </div>
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <script>
@@ -57,7 +64,9 @@ export default {
     getFile (path) {
       let vm = this
       vm.$http.get('/files' + path).then((response) => {
+        let name = path.split('/').pop()
         let newFile = {
+          name: name,
           path: path,
           code: '',
           editorOption: {
@@ -65,6 +74,7 @@ export default {
             mode: 'text/javascript',
             theme: 'material',
             lineNumbers: true,
+            lineWrapping: true,
             line: true,
             readOnly: true
           }
@@ -92,7 +102,12 @@ export default {
           fileChanged.code = response.body
         } else {
           newFile.code = response.body
-          vm.openFiles.push(newFile)
+          if (this.openFiles.length === 6) {
+            var index = this.openFiles.findIndex(file => file.path === this.currentOpenFilePath)
+            this.openFiles.splice(index, 1, newFile)
+          } else {
+            vm.openFiles.push(newFile)
+          }
         }
       }, (response) => {
         console.log(response)
@@ -104,6 +119,17 @@ export default {
       if (!vm.openFiles.find(file => file.path === path)) {
         vm.getFile(path)
       }
+    },
+    title: function (checkStyle) {
+      var style = 'fileTitle'
+      if (checkStyle) {
+        style = 'fileTitleSelect'
+      }
+      return style
+    },
+    closeFile: function (path) {
+      var index = this.openFiles.findIndex(file => file.path === path)
+      this.openFiles.splice(index, 1)
     }
   },
   components: {
@@ -112,15 +138,77 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-$column-gap: 0px;
-@import '~bulma';
 
+<style lang="scss">
 html, body {
   font-family: Menlo,Monaco,Consolas,Courier New,monospace!important;
   background-color: #202A2F;
   color: #9AAEB7;
   font-size: 18px;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+.app {
+  background: #FFF;
+  height: 100vh;
+  background: #202A2F;
+  .left {
+    overflow: auto;
+    display: inline-block;
+    width: 20vw;
+    height: 100vh;
+  }
+  .right {
+    float: right;
+    display: inline-block;
+    width: 80vw;
+    height: 100vh;
+    .tabs {
+      display: block;
+      width: 100%;
+      height: 40px;
+      padding-top: 8px;
+      overflow: hidden;
+      .tabs-tab {
+        display: inline-block;
+        box-sizing: border-box;
+        float: left;
+        height: 40px;
+        line-height: 40px;
+        width: 20%;
+        max-width: 200px;
+        min-width: 150px;
+        text-align: center;
+        color: #666c77;
+        overflow: hidden;
+        padding-right: 10px;
+        cursor: pointer;
+        &:hover {
+          color: #ccc;
+        }
+      }
+      .is-active {
+        background: #263238;
+        border-radius: 3px 3px 0px 0px;
+        border-left: 2px solid #58C6FC;
+        border-right: 1px solid #171E22;
+        border-top: 1px solid #171E22;
+        border-bottom: 1px solid #263238;
+        color: #ccc;
+      }
+    }
+    .item-views {
+      background: #263238;
+      display: block;
+      height: 100%;
+      border-top: 1px solid #171E22;
+      border-left: 1px solid #171E22;
+      border-right: 1px solid #171E22;
+      margin-right: 10px;
+    }
+  }
 }
 .overflow-scroll {
   height: 100vh;
@@ -128,12 +216,8 @@ html, body {
   -webkit-overflow-scrolling: touch;
   overflow: scroll;
 }
-.is-editor {
-  background-color: #263238;
-  border-left: 1px solid #171E22;
-}
 .CodeMirror {
-  height: 100vh !important;
+  height: calc(100vh - 48px) !important;
 }
 .item {
   cursor: pointer;
@@ -146,5 +230,8 @@ ul {
   line-height: 1.5em;
   list-style-type: dot;
   white-space: nowrap;
+}
+li {
+  list-style-type: none;
 }
 </style>
