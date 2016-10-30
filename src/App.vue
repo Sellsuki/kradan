@@ -6,6 +6,7 @@
           class="item"
           :model="list"
           :currentOpenFilePath="currentOpenFilePath"
+          :saved-file-path="savedFilePath"
           @openFile="openFile">
         </item>
       </ul>
@@ -42,7 +43,8 @@ export default {
         children: []
       },
       currentOpenFilePath: '',
-      openFiles: []
+      openFiles: [],
+      savedFilePath: ''
     }
   },
   computed: {
@@ -55,6 +57,7 @@ export default {
     })
     socket.on('change', function (path) {
       console.log('change ' + path)
+      vm.savedFilePath = path
       let fileChanged = vm.openFiles.find(file => file.path === path)
       if (fileChanged) {
         vm.getFile(path)
@@ -118,13 +121,6 @@ export default {
       } else {
         vm.currentOpenFilePath = path
       }
-    },
-    title: function (checkStyle) {
-      var style = 'fileTitle'
-      if (checkStyle) {
-        style = 'fileTitleSelect'
-      }
-      return style
     },
     closeFile: function (path) {
       var index = this.openFiles.findIndex(file => file.path === path)
@@ -249,6 +245,9 @@ li {
   list-style-type: none;
   &.is-active {
     color: #EAB877;
+  }
+  &.is-saved {
+    color: #eb7878;
   }
 }
 </style>
