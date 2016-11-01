@@ -44,7 +44,7 @@ export default {
       },
       currentOpenFilePath: '',
       openFiles: [],
-      savedFilePath: ''
+      savedFilePath: []
     }
   },
   computed: {
@@ -57,7 +57,10 @@ export default {
     })
     socket.on('change', function (path) {
       console.log('change ' + path)
-      vm.savedFilePath = path
+      var newSavedFile = {
+        path
+      }
+      vm.savedFilePath.push(newSavedFile)
       let fileChanged = vm.openFiles.find(file => file.path === path)
       if (fileChanged) {
         vm.getFile(path)
@@ -243,11 +246,11 @@ ul {
 }
 li {
   list-style-type: none;
+  &.is-not-seen {
+    color: #4acb99;
+  }
   &.is-active {
     color: #EAB877;
-  }
-  &.is-saved {
-    color: #eb7878;
   }
 }
 </style>
