@@ -6,6 +6,8 @@
           class="item"
           :model="list"
           :currentOpenFilePath="currentOpenFilePath"
+          :unseen-file-paths="unseenFilePaths"
+          :unseen-folder-paths="unseenFolderPaths"
           @openFile="openFile">
         </item>
       </ul>
@@ -42,7 +44,9 @@ export default {
         children: []
       },
       currentOpenFilePath: '',
-      openFiles: []
+      openFiles: [],
+      unseenFilePaths: [],
+      unseenFolderPaths: []
     }
   },
   computed: {
@@ -55,6 +59,7 @@ export default {
     })
     socket.on('change', function (path) {
       console.log('change ' + path)
+      vm.addUnseenFile(path)
       let fileChanged = vm.openFiles.find(file => file.path === path)
       if (fileChanged) {
         vm.getFile(path)
@@ -112,19 +117,13 @@ export default {
       })
     },
     openFile (path) {
+      this.removeUnseenFile(path)
       let vm = this
       if (!vm.openFiles.find(file => file.path === path)) {
         vm.getFile(path)
       } else {
         vm.currentOpenFilePath = path
       }
-    },
-    title: function (checkStyle) {
-      var style = 'fileTitle'
-      if (checkStyle) {
-        style = 'fileTitleSelect'
-      }
-      return style
     },
     closeFile: function (path) {
       var index = this.openFiles.findIndex(file => file.path === path)
@@ -135,6 +134,27 @@ export default {
           this.currentOpenFilePath = ''
         } else {
           this.currentOpenFilePath = this.openFiles[newIndex].path
+        }
+      }
+    },
+    addUnseenFile: function (path) {
+      this.unseenFilePaths.push(path)
+      var subPaths = path.split('/')
+      subPaths.shift()
+      subPaths.shift()
+      subPaths.forEach(subPath => {
+        var newPath = path.substring(0, path.search('/' + subPath))
+        this.unseenFolderPaths.push({path: newPath + '/', file: path})
+      })
+    },
+    removeUnseenFile: function (path) {
+      let index = this.unseenFilePaths.indexOf(path)
+      if (index !== -1) {
+        this.unseenFilePaths.splice(index, 1)
+        let isOpen = this.unseenFolderPaths.filter(folder => folder.file === path)
+        for (var i = 0; i <= isOpen.length; i++) {
+          let indexFolder = this.unseenFolderPaths.findIndex(folder => folder.file === path)
+          if (indexFolder !== -1) this.unseenFolderPaths.splice(indexFolder, 1)
         }
       }
     }
@@ -247,8 +267,14 @@ ul {
 }
 li {
   list-style-type: none;
+  &.is-unseen {
+    color: #4acb99;
+  }
   &.is-active {
     color: #EAB877;
+  }
+  &.is-none {
+    color: #9aaeb7;
   }
 }
 </style>
