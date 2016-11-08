@@ -23,7 +23,7 @@
       </ul>
       <div class="item-views">
         <div v-for="openFile in openFiles">
-          <viewer v-if="currentOpenFilePath === openFile.path" :info="openFile"></viewer>
+          <viewer v-if="currentOpenFilePath === openFile.path" :info="openFile" :unseen-line="unseenLine"></viewer>
         </div>
       </div>
     </div>
@@ -34,7 +34,13 @@
 /* global io */
 import Item from 'components/Item'
 import Viewer from 'components/Viewer'
-
+var JsDiff = require('diff')
+function makeMarker () {
+  var marker = document.createElement('div')
+  marker.style.color = '#fba949'
+  marker.innerHTML = '|'
+  return marker
+}
 export default {
   data () {
     return {
@@ -46,7 +52,8 @@ export default {
       currentOpenFilePath: '',
       openFiles: [],
       unseenFilePaths: [],
-      unseenFolderPaths: []
+      unseenFolderPaths: [],
+      unseenLine: []
     }
   },
   computed: {
@@ -75,6 +82,8 @@ export default {
           name: name,
           path: path,
           code: '',
+          unseenLines: [],
+          marker: makeMarker,
           editorOption: {
             tabSize: 2,
             mode: 'text/javascript',
@@ -82,7 +91,8 @@ export default {
             lineNumbers: true,
             lineWrapping: true,
             line: true,
-            readOnly: true
+            readOnly: true,
+            gutters: ['CodeMirror-linenumbers', 'breakpoints']
           }
         }
         let ext = path.split('.').pop()
@@ -105,6 +115,9 @@ export default {
 
         let fileChanged = vm.openFiles.find(file => file.path === path)
         if (fileChanged) {
+          // diff line changed
+          let diff = JsDiff.diffLines(fileChanged.code, response.body)
+          fileChanged.unseenLines = this.addUnseenLine(diff)
           fileChanged.code = response.body
         } else {
           newFile.code = response.body
@@ -157,6 +170,27 @@ export default {
           if (indexFolder !== -1) this.unseenFolderPaths.splice(indexFolder, 1)
         }
       }
+    },
+    addUnseenLine: function (diff) {
+      let count = 0
+      var lines = []
+      diff.forEach(item => {
+        if (item.added === undefined && item.removed === undefined) {
+          count += item.count
+        }
+        if (item.added) {
+          if (item.count > 1) {
+            for (var i = 0; i < item.count; i++) {
+              lines.push(parseInt(count))
+              count++
+            }
+          } else {
+            lines.push(parseInt(count))
+            count += item.count
+          }
+        }
+      })
+      return lines
     }
   },
   components: {

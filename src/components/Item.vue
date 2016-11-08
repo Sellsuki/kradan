@@ -18,7 +18,6 @@
     </ul>
   </li>
 </template>
-
 <script>
 export default {
   name: 'item',
