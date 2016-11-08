@@ -1,6 +1,6 @@
 <template lang="html">
   <div>
-    <codemirror v-if="!isImage" :code="info.code" :options="info.editorOption"></codemirror>
+    <codemirror v-if="!isImage" :code="info.code" :options="info.editorOption" :unseen-lines="info.unseenLines" :marker="info.marker"></codemirror>
     <div v-if="isImage" class="image-container">
       <img :src="'files/' + info.path" alt="" />
     </div>
@@ -14,7 +14,7 @@ export default {
   data () {
     return {}
   },
-  props: ['info'],
+  props: ['info', 'unseenLine'],
   computed: {
     isImage () {
       let type = this.info.path.split('.').pop()

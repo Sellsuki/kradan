@@ -6,7 +6,6 @@ import CodeMirror from 'vue-codemirror'
 
 Vue.use(require('vue-resource'))
 Vue.use(CodeMirror)
-
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
