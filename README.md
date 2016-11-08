@@ -4,6 +4,13 @@
 
 ![logo](https://rawgit.com/Sellsuki/kradan/master/icon.png)
 
+## usage
+
+``` bash
+sudo npm install -g kradan
+kradan
+```
+
 ## Build Setup
 
 ``` bash
