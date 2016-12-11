@@ -17,7 +17,8 @@
         <li class="tabs-tab" v-for="file in openFiles" :class="{'is-active': currentOpenFilePath === file.path}" @click.self="openFile(file.path)">
           <span class="tabs-tab-name" @click.self="openFile(file.path)">{{file.name}}</span>
           <span class="icon" @click="closeFile(file.path)" style="float: right;">
-            <i class="fa fa-close" aria-hidden="true"></i>
+            <i class="fa fa-close" aria-hidden="true" v-show="!unseenFilePaths.find(path => path === file.path)"></i>
+            <i class="fa fa-pencil" aria-hidden="true" v-show="unseenFilePaths.find(path => path === file.path)"></i>
           </span>
         </li>
       </ul>
@@ -302,10 +303,11 @@ ul {
 li {
   list-style-type: none;
   &.is-unseen {
-    color: #4acb99;
+    color: #EAB877;
   }
   &.is-active {
-    color: #EAB877;
+    color: #ffffff;
+    background-color: #263238;
   }
   &.is-none {
     color: #9aaeb7;
