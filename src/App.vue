@@ -219,7 +219,7 @@ html, body {
   .left {
     overflow: auto;
     display: inline-block;
-    width: 20vw;
+    width: 15vw;
     height: 100vh;
     font-family: 'BlinkMacSystemFont', 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
     font-size: 14px;
@@ -227,7 +227,7 @@ html, body {
   .right {
     float: right;
     display: inline-block;
-    width: 80vw;
+    width: 85vw;
     height: 100vh;
     padding-top: 8px;
     .tabs {
