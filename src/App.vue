@@ -311,6 +311,10 @@ li {
     color: #ffffff;
     background-color: #263238;
   }
+  &.is-active-unseen {
+    color: #EAB877;
+    background-color: #263238;
+  }
   &.is-none {
     color: #9aaeb7;
   }
