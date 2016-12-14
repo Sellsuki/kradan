@@ -17,8 +17,8 @@
         <li class="tabs-tab" v-for="file in openFiles" :class="{'is-active': currentOpenFilePath === file.path}" @click.self="openFile(file.path)">
           <span class="tabs-tab-name" @click.self="openFile(file.path)">{{file.name}}</span>
           <span class="icon" @click="closeFile(file.path)" style="float: right;">
-            <i class="fa fa-close" aria-hidden="true" v-show="!unseenFilePaths.find(path => path === file.path)"></i>
-            <i class="fa fa-pencil" aria-hidden="true" v-show="unseenFilePaths.find(path => path === file.path)"></i>
+            <i class="fa fa-close" aria-hidden="true" v-show="!isUnseenTab(file.path)"></i>
+            <i class="fa fa-pencil" aria-hidden="true" v-show="isUnseenTab(file.path)"></i>
           </span>
         </li>
       </ul>
@@ -42,6 +42,8 @@ function makeMarker () {
   marker.innerHTML = '|'
   return marker
 }
+// 5465656
+// 6565
 export default {
   data () {
     return {
@@ -66,6 +68,7 @@ export default {
       vm.list = list
     })
     socket.on('change', function (path) {
+      console.log('change ' + path)
       vm.addUnseenFile(path)
       let fileChanged = vm.openFiles.find(file => file.path === path)
       if (fileChanged) {
@@ -151,27 +154,26 @@ export default {
       }
     },
     addUnseenFile: function (path) {
-      if (!this.unseenFilePaths.find(unseen => unseen === path)) {
-        this.unseenFilePaths.push(path)
-        var subPaths = path.split('/')
-        subPaths.shift()
-        subPaths.shift()
-        subPaths.forEach(subPath => {
-          var newPath = path.substring(0, path.search('/' + subPath))
-          this.unseenFolderPaths.push({path: newPath + '/', file: path})
-        })
-      }
+      // if (!this.unseenFilePaths.find(unseen => unseen === path)) {
+      this.unseenFilePaths.push(path)
+      var subPaths = path.split('/')
+      subPaths.shift()
+      subPaths.shift()
+      subPaths.forEach(subPath => {
+        var newPath = path.substring(0, path.search('/' + subPath))
+        this.unseenFolderPaths.push({path: newPath + '/', file: path})
+      })
+      // }
     },
     removeUnseenFile: function (path) {
-      var vm = this
       let index = this.unseenFilePaths.indexOf(path)
       if (index !== -1) {
         this.unseenFilePaths.splice(index, 1)
         let isOpen = this.unseenFolderPaths.filter(folder => folder.file === path)
-        isOpen.forEach(() => {
-          let indexFolder = vm.unseenFolderPaths.findIndex(folder => folder.file === path)
-          if (indexFolder !== -1) vm.unseenFolderPaths.splice(indexFolder, 1)
-        })
+        for (var i = 0; i <= isOpen.length; i++) {
+          let indexFolder = this.unseenFolderPaths.findIndex(folder => folder.file === path)
+          if (indexFolder !== -1) this.unseenFolderPaths.splice(indexFolder, 1)
+        }
       }
     },
     addUnseenLine: function (diff) {
@@ -194,6 +196,9 @@ export default {
         }
       })
       return lines
+    },
+    isUnseenTab (file) {
+      return this.unseenFilePaths.find(path => path === file)
     }
   },
   components: {
