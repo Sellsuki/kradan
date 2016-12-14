@@ -77,9 +77,6 @@ export default {
     })
   },
   methods: {
-    isUnseenTab (file) {
-      return this.unseenFilePaths.find(path => path === file)
-    },
     getFile (path) {
       let vm = this
       vm.$http.get('/files' + path).then((response) => {
@@ -199,6 +196,9 @@ export default {
         }
       })
       return lines
+    },
+    isUnseenTab (file) {
+      return this.unseenFilePaths.find(path => path === file)
     }
   },
   components: {
