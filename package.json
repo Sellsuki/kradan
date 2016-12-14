@@ -1,6 +1,6 @@
 {
   "name": "kradan",
-  "version": "0.1.37",
+  "version": "0.1.41",
   "description": "A Vue.js project",
   "author": "Nati Namvong <nati@sellsuki.com>",
   "private": false,
@@ -22,7 +22,7 @@
     "readdir": "0.0.13",
     "socket.io": "^1.5.0",
     "vue": "^2.0.3",
-    "vue-codemirror": "https://github.com/n9ti/vue-codemirror.git#2.1.2",
+    "vue-codemirror": "git+https://github.com/n9ti/vue-codemirror.git#v2.1.2",
     "vue-resource": "^1.0.3"
   },
   "devDependencies": {
@@ -73,9 +73,9 @@
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0",
     "url-loader": "^0.5.7",
-    "vue-loader": "^9.7.0",
+    "vue-loader": "^10.0.2",
     "vue-style-loader": "^1.0.0",
-    "webpack": "^1.13.2",
+    "webpack": "^1.14.0",
     "webpack-dev-middleware": "^1.8.3",
     "webpack-hot-middleware": "^2.12.2",
     "webpack-merge": "^0.14.1"

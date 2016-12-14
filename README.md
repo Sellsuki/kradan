@@ -4,6 +4,13 @@
 
 ![logo](https://rawgit.com/Sellsuki/kradan/master/icon.png)
 
+## usage
+
+``` bash
+sudo npm install -g kradan
+kradan
+```
+
 ## Build Setup
 
 ``` bash
@@ -21,7 +28,7 @@ npm test
 
 ```bash
 # Run backend process
-nodemon kradan
+nodemon kradan.js
 
 # Run frontend
 npm run dev
