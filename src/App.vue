@@ -17,7 +17,8 @@
         <li class="tabs-tab" v-for="file in openFiles" :class="{'is-active': currentOpenFilePath === file.path}" @click.self="openFile(file.path)">
           <span class="tabs-tab-name" @click.self="openFile(file.path)">{{file.name}}</span>
           <span class="icon" @click="closeFile(file.path)" style="float: right;">
-            <i class="fa fa-close" aria-hidden="true"></i>
+            <i class="fa fa-close" aria-hidden="true" v-show="!unseenFilePaths.find(path => path === file.path)"></i>
+            <i class="fa fa-pencil" aria-hidden="true" v-show="unseenFilePaths.find(path => path === file.path)"></i>
           </span>
         </li>
       </ul>
@@ -65,7 +66,6 @@ export default {
       vm.list = list
     })
     socket.on('change', function (path) {
-      console.log('change ' + path)
       vm.addUnseenFile(path)
       let fileChanged = vm.openFiles.find(file => file.path === path)
       if (fileChanged) {
@@ -151,24 +151,27 @@ export default {
       }
     },
     addUnseenFile: function (path) {
-      this.unseenFilePaths.push(path)
-      var subPaths = path.split('/')
-      subPaths.shift()
-      subPaths.shift()
-      subPaths.forEach(subPath => {
-        var newPath = path.substring(0, path.search('/' + subPath))
-        this.unseenFolderPaths.push({path: newPath + '/', file: path})
-      })
+      if (!this.unseenFilePaths.find(unseen => unseen === path)) {
+        this.unseenFilePaths.push(path)
+        var subPaths = path.split('/')
+        subPaths.shift()
+        subPaths.shift()
+        subPaths.forEach(subPath => {
+          var newPath = path.substring(0, path.search('/' + subPath))
+          this.unseenFolderPaths.push({path: newPath + '/', file: path})
+        })
+      }
     },
     removeUnseenFile: function (path) {
+      var vm = this
       let index = this.unseenFilePaths.indexOf(path)
       if (index !== -1) {
         this.unseenFilePaths.splice(index, 1)
         let isOpen = this.unseenFolderPaths.filter(folder => folder.file === path)
-        for (var i = 0; i <= isOpen.length; i++) {
-          let indexFolder = this.unseenFolderPaths.findIndex(folder => folder.file === path)
-          if (indexFolder !== -1) this.unseenFolderPaths.splice(indexFolder, 1)
-        }
+        isOpen.forEach(() => {
+          let indexFolder = vm.unseenFolderPaths.findIndex(folder => folder.file === path)
+          if (indexFolder !== -1) vm.unseenFolderPaths.splice(indexFolder, 1)
+        })
       }
     },
     addUnseenLine: function (diff) {
@@ -216,7 +219,7 @@ html, body {
   .left {
     overflow: auto;
     display: inline-block;
-    width: 20vw;
+    width: 15vw;
     height: 100vh;
     font-family: 'BlinkMacSystemFont', 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
     font-size: 14px;
@@ -224,7 +227,7 @@ html, body {
   .right {
     float: right;
     display: inline-block;
-    width: 80vw;
+    width: 85vw;
     height: 100vh;
     padding-top: 8px;
     .tabs {
@@ -302,10 +305,15 @@ ul {
 li {
   list-style-type: none;
   &.is-unseen {
-    color: #4acb99;
+    color: #EAB877;
   }
   &.is-active {
+    color: #ffffff;
+    background-color: #263238;
+  }
+  &.is-active-unseen {
     color: #EAB877;
+    background-color: #263238;
   }
   &.is-none {
     color: #9aaeb7;

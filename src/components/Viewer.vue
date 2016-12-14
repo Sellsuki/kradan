@@ -9,7 +9,6 @@
 
 <script>
 import { codemirror } from 'vue-codemirror'
-
 export default {
   data () {
     return {}
