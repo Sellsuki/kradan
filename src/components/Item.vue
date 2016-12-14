@@ -1,5 +1,5 @@
 <template lang="html">
-  <li :class="{'is-active': currentOpenFilePath === model.path, 'is-unseen': isUnseen, 'is-none': isNone}">
+  <li :class="{'is-active-unseen': isActiveUnseen, 'is-active': currentOpenFilePath === model.path, 'is-unseen': isUnseen, 'is-none': isNone}">
     <div
       @click="onClick">
       <span v-if="isFolder">{{open ? '▼' : '▶'}}</span>
@@ -52,6 +52,9 @@ export default {
     },
     isNone: function () {
       return (!this.isUnseenFile && !this.isUnseenFolder && this.currentOpenFilePath !== this.model.path)
+    },
+    isActiveUnseen: function () {
+      return this.currentOpenFilePath === this.model.path && this.isUnseen
     }
   },
   methods: {
