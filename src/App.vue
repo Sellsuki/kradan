@@ -42,8 +42,6 @@ function makeMarker () {
   marker.innerHTML = '|'
   return marker
 }
-// 5465656
-// 6565
 export default {
   data () {
     return {
@@ -154,26 +152,27 @@ export default {
       }
     },
     addUnseenFile: function (path) {
-      // if (!this.unseenFilePaths.find(unseen => unseen === path)) {
-      this.unseenFilePaths.push(path)
-      var subPaths = path.split('/')
-      subPaths.shift()
-      subPaths.shift()
-      subPaths.forEach(subPath => {
-        var newPath = path.substring(0, path.search('/' + subPath))
-        this.unseenFolderPaths.push({path: newPath + '/', file: path})
-      })
-      // }
+      if (!this.unseenFilePaths.find(unseen => unseen === path)) {
+        this.unseenFilePaths.push(path)
+        var subPaths = path.split('/')
+        subPaths.shift()
+        subPaths.shift()
+        subPaths.forEach(subPath => {
+          var newPath = path.substring(0, path.search('/' + subPath))
+          this.unseenFolderPaths.push({path: newPath + '/', file: path})
+        })
+      }
     },
     removeUnseenFile: function (path) {
+      var vm = this
       let index = this.unseenFilePaths.indexOf(path)
       if (index !== -1) {
         this.unseenFilePaths.splice(index, 1)
         let isOpen = this.unseenFolderPaths.filter(folder => folder.file === path)
-        for (var i = 0; i <= isOpen.length; i++) {
-          let indexFolder = this.unseenFolderPaths.findIndex(folder => folder.file === path)
-          if (indexFolder !== -1) this.unseenFolderPaths.splice(indexFolder, 1)
-        }
+        isOpen.forEach(() => {
+          let indexFolder = vm.unseenFolderPaths.findIndex(folder => folder.file === path)
+          if (indexFolder !== -1) vm.unseenFolderPaths.splice(indexFolder, 1)
+        })
       }
     },
     addUnseenLine: function (diff) {
