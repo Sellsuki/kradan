@@ -8,7 +8,22 @@ var io = require('socket.io')(http)
 var chokidar = require('chokidar')
 var helper = require('./helper.js')
 var path = require('path')
+var os = require('os')
+var colors = require('colors/safe')
 
+var ifaces = os.networkInterfaces()
+colors.setTheme({
+  silly: 'rainbow',
+  input: 'grey',
+  verbose: 'cyan',
+  prompt: 'grey',
+  info: 'green',
+  data: 'grey',
+  help: 'cyan',
+  warn: 'yellow',
+  debug: 'blue',
+  error: 'red'
+})
 var data = {}
 data.ls = helper.getDirJson('.')
 data.list = helper.getDirList('.')
@@ -70,7 +85,15 @@ chokidar.watch('.', {
 })
 
 http.listen(1112, function () {
-  console.log('Listening on *:1112')
+  console.log(colors.warn('Starting up kradan'))
+  console.log(colors.warn('Available on:'))
+  Object.keys(ifaces).forEach(function (dev) {
+    ifaces[dev].forEach(function (details) {
+      if (details.family === 'IPv4') {
+        console.log(colors.info('  http://' + details.address + ':1112'))
+      }
+    })
+  })
   console.log('Hit CTRL-C to stop the server')
 })
 
