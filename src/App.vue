@@ -11,6 +11,9 @@
           @openFile="openFile">
         </item>
       </ul>
+      <div download  class="download-button" @click="downloadZip">
+        {{list.name}}.zip
+      </div>
     </div>
     <div class="right">
       <ul class="tabs">
@@ -35,7 +38,12 @@
 /* global io */
 import Item from 'components/Item'
 import Viewer from 'components/Viewer'
+
 var JsDiff = require('diff')
+var JSZip = require('jszip')
+var FileSaver = require('file-saver')
+var zip = new JSZip()
+
 function makeMarker () {
   var marker = document.createElement('div')
   marker.style.color = '#fba949'
@@ -198,6 +206,42 @@ export default {
     },
     isUnseenTab (file) {
       return this.unseenFilePaths.find(path => path === file)
+    },
+    downloadZip () {
+      var vm = this
+      this.getZip(this.list)
+      setTimeout(function () {
+        zip.generateAsync({type: 'blob'}).then(function (blob) {
+          FileSaver.saveAs(blob, vm.list.name + '.zip')
+        })
+      }, 1000)
+    },
+    getZip (lists) {
+      var vm = this
+      lists.children.forEach(list => {
+        var type = list.path.split('.').pop().toUpperCase()
+        if (list.type === 'directory') {
+          this.getZip(list)
+        } else if (list.type === 'file' && (type === 'PNG' || type === 'JPG' || type === 'JPEG' || type === 'ICO' || type === 'SVG' || type === 'GIF')) {
+          var img = document.createElement('img')
+          img.src = 'files' + list.path
+          img.onload = function () {
+            var c = document.createElement('canvas')
+            c.width = this.naturalWidth
+            c.height = this.naturalHeight
+            c.getContext('2d').drawImage(this, 0, 0)
+              // Get raw image data
+            var imgData = c.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, '')
+            // save image file
+            zip.file(vm.list.name + list.path, imgData, {base64: true})
+          }
+        } else if (list.type === 'file') {
+          // save file
+          this.$http.get('/files' + list.path).then((response) => {
+            zip.file(vm.list.name + list.path, response.body, {binary: true})
+          })
+        }
+      })
     }
   },
   components: {
@@ -214,8 +258,16 @@ html, body {
   overflow: hidden;
   margin: 0;
   padding: 0;
+}::-webkit-scrollbar-track{
+  border-radius: 10px;
 }
-
+::-webkit-scrollbar{
+  width: 6px;
+}
+::-webkit-scrollbar-thumb{
+  border-radius: 10px;
+  background-color: #394545;
+}
 .app {
   background: #FFF;
   height: 100vh;
@@ -224,9 +276,38 @@ html, body {
     overflow: auto;
     display: inline-block;
     width: 15vw;
-    height: 100vh;
+    height: 92vh;
     font-family: 'BlinkMacSystemFont', 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
     font-size: 14px;
+    .download-button {
+      position: absolute;
+      bottom: 2vh;
+      left: 1vw;
+      width: 8vw;
+      padding: 10px 0px 10px 70px;
+      text-decoration: none;
+      border: 1px solid #E3E3E3;
+      background-color: #263238;
+      transition: 0.1;
+      cursor: pointer;
+    }
+    .download-button:focus,
+    .download-button:hover {
+      border-color: #E31A4C;
+      outline: none;
+    }
+    .download-button:active {
+      animation: enlight 0.5s;
+    }
+    .download-button::before {
+      content: ''; /* 1 */
+      background: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/2037/download.svg') no-repeat center; /* 2 */
+      position: absolute; /* 3 */
+      top: 0; /* 4 */
+      bottom: 0; /* 4 */
+      left: 0; /* 5 */
+      width: 70px ; /* 6 */
+    }
   }
   .right {
     float: right;
