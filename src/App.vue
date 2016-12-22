@@ -1,16 +1,18 @@
 <template lang="html">
   <div class="app">
     <div class="left">
-      <ul>
-        <item
-          class="item"
-          :model="list"
-          :currentOpenFilePath="currentOpenFilePath"
-          :unseen-file-paths="unseenFilePaths"
-          :unseen-folder-paths="unseenFolderPaths"
-          @openFile="openFile">
-        </item>
-      </ul>
+      <div class="tree">
+        <ul>
+          <item
+            class="item"
+            :model="list"
+            :currentOpenFilePath="currentOpenFilePath"
+            :unseen-file-paths="unseenFilePaths"
+            :unseen-folder-paths="unseenFolderPaths"
+            @openFile="openFile">
+          </item>
+        </ul>
+      </div>
       <div download  class="download-button" @click="downloadZip">
         {{list.name}}.zip
       </div>
@@ -214,7 +216,7 @@ export default {
         zip.generateAsync({type: 'blob'}).then(function (blob) {
           FileSaver.saveAs(blob, vm.list.name + '.zip')
         })
-      }, 1000)
+      }, 1500)
     },
     getZip (lists) {
       var vm = this
@@ -276,15 +278,19 @@ html, body {
     overflow: auto;
     display: inline-block;
     width: 15vw;
-    height: 92vh;
+    height: 100vh;
     font-family: 'BlinkMacSystemFont', 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
     font-size: 14px;
+    .tree {
+      height: 92vh;
+    }
     .download-button {
-      position: absolute;
-      bottom: 2vh;
-      left: 1vw;
-      width: 8vw;
-      padding: 10px 0px 10px 70px;
+      width: 12vw;
+      height: 3vh;
+      margin-left: 1vw;
+      padding-top: 12px;
+      text-align: center;
+      position: relative;
       text-decoration: none;
       border: 1px solid #E3E3E3;
       background-color: #263238;
@@ -300,13 +306,13 @@ html, body {
       animation: enlight 0.5s;
     }
     .download-button::before {
-      content: ''; /* 1 */
-      background: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/2037/download.svg') no-repeat center; /* 2 */
-      position: absolute; /* 3 */
-      top: 0; /* 4 */
-      bottom: 0; /* 4 */
-      left: 0; /* 5 */
-      width: 70px ; /* 6 */
+      content: '';
+      background: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/2037/download.svg') no-repeat center;
+      position: absolute;
+      top: 10px;
+      left: 0px;
+      height: 2vh;
+      width: 2.5vw ;
     }
   }
   .right {
