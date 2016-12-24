@@ -3,26 +3,23 @@
 > A Vue.js project
 
 ![logo](https://rawgit.com/Sellsuki/kradan/master/icon.png)
+## Installation
+Installation via [npm](https://nodejs.org/en/) :
+``` bash
+$ npm install -g kradan
+or
+$ sudo npm install -g kradan
+```
 
 ## usage
 
+Starting kradan in local project :
 ``` bash
-sudo npm install -g kradan
-kradan
+$ kradan
 ```
+Now you can visit http://localhost:1112 to view your server
 
-## Build Setup
 
-``` bash
-# install dependencies
-npm install
-
-# run unit tests
-npm run unit
-
-# run all tests
-npm test
-```
 
 ## Dev
 
