@@ -120,6 +120,9 @@ export default {
           case 'jsx':
             newFile.editorOption.mode = 'text/jsx'
             break
+          case 'css':
+            newFile.editorOption.mode = 'text/css'
+            break
           default:
             newFile.editorOption.mode = 'text/javascript'
         }
@@ -132,6 +135,7 @@ export default {
           fileChanged.code = response.body
         } else {
           newFile.code = response.body
+          if (!(typeof newFile.code === 'string')) newFile.code = ''
           const index = vm.openFiles.findIndex(file => file.path === vm.currentOpenFilePath)
           vm.openFiles.splice(index + 1, 0, newFile)
           vm.currentOpenFilePath = path
