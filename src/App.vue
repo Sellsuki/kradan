@@ -96,7 +96,7 @@ export default {
           unseenLines: [],
           marker: makeMarker,
           editorOption: {
-            tabSize: 2,
+            tabSize: 4,
             mode: 'text/javascript',
             theme: 'material',
             lineNumbers: true,
@@ -413,5 +413,8 @@ li {
   &.is-none {
     color: #9aaeb7;
   }
+}
+.CodeMirror {
+  font-size: 1.2em;
 }
 </style>
