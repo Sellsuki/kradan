@@ -209,16 +209,15 @@ export default {
     isUnseenTab (file) {
       return this.unseenFilePaths.find(path => path === file)
     },
-    downloadZip () {
-      var vm = this
-      this.getZip(this.list)
-      setTimeout(function () {
-        zip.generateAsync({type: 'blob'}).then(function (blob) {
-          FileSaver.saveAs(blob, vm.list.name + '.zip')
-        })
-      }, 1500)
+    async downloadZip () {
+      await Promise.all([this.getZip(this.list), this.saveFileSaver(this.list)])
     },
-    getZip (lists) {
+    async saveFileSaver (list) {
+      zip.generateAsync({type: 'blob'}).then(async function (blob) {
+        await FileSaver.saveAs(blob, list.name + '.zip')
+      })
+    },
+    async getZip (lists) {
       var vm = this
       lists.children.forEach(list => {
         var type = list.path.split('.').pop().toUpperCase()
@@ -227,13 +226,13 @@ export default {
         } else if (list.type === 'file' && (type === 'PNG' || type === 'JPG' || type === 'JPEG' || type === 'ICO' || type === 'SVG' || type === 'GIF')) {
           var img = document.createElement('img')
           img.src = 'files' + list.path
-          img.onload = function () {
+          img.onload = async function () {
             var c = document.createElement('canvas')
             c.width = this.naturalWidth
             c.height = this.naturalHeight
             c.getContext('2d').drawImage(this, 0, 0)
               // Get raw image data
-            var imgData = c.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, '')
+            var imgData = await c.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, '')
             // save image file
             zip.file(vm.list.name + list.path, imgData, {base64: true})
           }
