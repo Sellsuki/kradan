@@ -2,7 +2,7 @@
   <li :class="{'is-active-unseen': isActiveUnseen, 'is-active': currentOpenFilePath === model.path, 'is-unseen': isUnseen, 'is-none': isNone}">
     <div
       @click="onClick">
-      <span v-if="isFolder">{{open ? '▼' : '▶'}}</span>
+      <span v-if="isFolder">{{open ? '▼ 🗂 ' : '▶ 🗂'}}</span>
       {{model.name}}
     </div>
     <ul v-show="open" v-if="isFolder">

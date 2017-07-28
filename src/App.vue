@@ -1,9 +1,11 @@
 <template lang="html">
   <div class="app">
     <div class="left">
+      <div download  class="download-button" @click="downloadZip">
+        {{list.name}}.zip
+      </div>
       <div class="tree">
         <ul>
-          qweqweqweqqwqwe
           <item
             class="item"
             :model="list"
@@ -14,9 +16,7 @@
           </item>
         </ul>
       </div>
-      <div download  class="download-button" @click="downloadZip">
-        {{list.name}}.zip
-      </div>
+      <div class="setting"> 🔧 setting</div>
     </div>
     <div class="right">
       <ul class="tabs">
@@ -283,6 +283,8 @@ html, body {
     font-size: 14px;
     .tree {
       height: 92vh;
+      display: inline-block;
+      margin-bottom: 0%;
     }
     .download-button {
       width: 12vw;
@@ -409,5 +411,8 @@ li {
   &.is-none {
     color: #9aaeb7;
   }
+}
+.setting {
+  text-align: center;
 }
 </style>
