@@ -3,6 +3,7 @@
     <div class="left">
       <div class="tree">
         <ul>
+          qweqweqweqqwqwe
           <item
             class="item"
             :model="list"
