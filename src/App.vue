@@ -130,12 +130,12 @@ export default {
         let fileChanged = vm.openFiles.find(file => file.path === path)
         if (fileChanged) {
           // diff line changed
-          let diff = JsDiff.diffLines(fileChanged.code, response.body)
+          let code = (typeof response.body === 'string') ? response.body : ''
+          let diff = JsDiff.diffLines(fileChanged.code, code)
           fileChanged.unseenLines = this.addUnseenLine(diff)
-          fileChanged.code = response.body
+          fileChanged.code = code
         } else {
-          newFile.code = response.body
-          if (!(typeof newFile.code === 'string')) newFile.code = ''
+          newFile.code = (typeof response.body === 'string') ? response.body : ''
           var index = vm.openFiles.findIndex(file => file.path === vm.currentOpenFilePath)
           vm.openFiles.splice(index + 1, 0, newFile)
           vm.currentOpenFilePath = path
