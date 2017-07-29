@@ -59,7 +59,6 @@ export default {
     },
     isIcon () {
       let icon = this.model.name.split('.').pop(-1)
-      console.log(icon)
       if (this.model.type === 'directory') return '../../static/folder.png'
       else if (this.model.name === 'package.json') return '../../static/npm.png'
       else if (this.model.name === 'yarn.lock') return '../../static/yarn.png'
@@ -79,36 +78,6 @@ export default {
         case 'jsx': return '../../static/jsx.png'
         case 'ts': return '../../static/ts.png'
       }
-      // test
-      // if (this.model.name.split('.').pop(-1) === 'js') {
-      //   return '../../static/js.png'
-      // } else if (this.model.name === 'package.json') {
-      //   return '../../static/npm.png'
-      // } else if (this.model.name.split('.').pop(-1) === 'log') {
-      //   return '../../static/log.ico'
-      // } else if (this.model.type === 'directory') {
-      //   return '../../static/folder.png'
-      // } else if (this.model.name.split('.').pop(-1) === 'png' || this.model.name.split('.').pop(-1) === 'jpg' || this.model.name.split('.').pop(-1) === 'ico') {
-      //   return '../../static/pic.png'
-      // } else if (this.model.name.split('.').pop(-1) === 'html') {
-      //   return '../../static/html.png'
-      // } else if (this.model.name.split('.').pop(-1) === 'vue') {
-      //   return '../../static/vue.png'
-      // } else if (this.model.name.split('.').pop(-1) === 'css') {
-      //   return '../../static/css.png'
-      // } else if (this.model.name === 'yarn.lock') {
-      //   return '../../static/yarn.png'
-      // } else if (this.model.name.split('.').pop(-1) === 'md') {
-      //   return '../../static/md.png'
-      // } else if (this.model.name === '.editorconfig' || this.model.name === '.eslintignore') {
-      //   return '../../static/eslint.png'
-      // } else if (this.model.name === '.babelrc') {
-      //   return '../../static/babel.png'
-      // } else if (this.model.name.split('.').pop(-1) === 'jsx') {
-      //   return '../../static/jsx.png'
-      // } else if (this.model.name.split('.').pop(-1) === 'ts') {
-      //   return '../../static/ts.png'
-      // }
     }
   },
   methods: {
