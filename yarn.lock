@@ -5356,9 +5356,9 @@ void-elements@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/void-elements/-/void-elements-2.0.1.tgz#c066afb582bb1cb4128d60ea92392e94d5e9dbec"
 
-vue-codemirror@2.1.5:
-  version "2.1.5"
-  resolved "https://registry.yarnpkg.com/vue-codemirror/-/vue-codemirror-2.1.5.tgz#b1ca98645f11b7cdccb9f8ec6f019f49f3c9dc40"
+vue-codemirror@^2.1.5:
+  version "2.9.9"
+  resolved "https://registry.yarnpkg.com/vue-codemirror/-/vue-codemirror-2.9.9.tgz#0f2e6f2c3e5074929ad5fbdd31f50cbf1514916b"
   dependencies:
     codemirror "^5.19.0"
 
