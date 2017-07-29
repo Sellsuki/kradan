@@ -1146,7 +1146,11 @@ code-point-at@^1.0.0:
   dependencies:
     number-is-nan "^1.0.0"
 
+<<<<<<< HEAD
 codemirror@^5.19.0:
+=======
+codemirror@^5.28.0:
+>>>>>>> 28d1c0824cfc8332ea9f324057781876c9a35ce9
   version "5.28.0"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.28.0.tgz#2978d9280d671351a4f5737d06bbd681a0fd6f83"
 
@@ -5356,11 +5360,17 @@ void-elements@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/void-elements/-/void-elements-2.0.1.tgz#c066afb582bb1cb4128d60ea92392e94d5e9dbec"
 
+<<<<<<< HEAD
 vue-codemirror@^2.1.5:
   version "2.9.9"
   resolved "https://registry.yarnpkg.com/vue-codemirror/-/vue-codemirror-2.9.9.tgz#0f2e6f2c3e5074929ad5fbdd31f50cbf1514916b"
+=======
+vue-codemirror@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/vue-codemirror/-/vue-codemirror-3.1.2.tgz#5f86662ccc19370d89be20b9540b894876185fa2"
+>>>>>>> 28d1c0824cfc8332ea9f324057781876c9a35ce9
   dependencies:
-    codemirror "^5.19.0"
+    codemirror "^5.28.0"
 
 vue-hot-reload-api@^2.0.1:
   version "2.0.6"
