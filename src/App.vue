@@ -1,9 +1,6 @@
 <template lang="html">
   <div class="app">
     <div class="left">
-      <div download  class="download-button" @click="downloadZip">
-        {{list.name}}.zip
-      </div>
       <div class="tree">
         <ul>
           <item
@@ -16,7 +13,9 @@
           </item>
         </ul>
       </div>
-      <div class="setting"> 🔧 setting</div>
+      <div download  class="download-button" @click="downloadZip">
+        {{list.name}}.zip
+      </div>
     </div>
     <div class="right">
       <ul class="tabs">
