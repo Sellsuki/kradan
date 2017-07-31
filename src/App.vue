@@ -287,6 +287,8 @@ html, body {
     font-size: 14px;
     .tree {
       height: 92vh;
+      display: inline-block;
+      margin-bottom: 0%;
     }
     .download-button {
       width: 12vw;
