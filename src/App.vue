@@ -100,7 +100,7 @@ export default {
             mode: 'text/javascript',
             theme: 'material',
             lineNumbers: true,
-            lineWrapping: true,
+            lineWrapping: false,
             line: true,
             readOnly: true,
             gutters: ['CodeMirror-linenumbers', 'breakpoints']
