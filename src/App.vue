@@ -269,6 +269,7 @@ html, body {
 }
 ::-webkit-scrollbar{
   width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-thumb{
   border-radius: 10px;
@@ -415,6 +416,10 @@ li {
   }
 }
 .CodeMirror {
-  font-size: 1.2em;
+   font-size: 1.2em;
+  /* line-height: 1.4em;  */
 }
+pre.CodeMirror-line {
+  padding-left: 10px !important;
+} 
 </style>
