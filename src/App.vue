@@ -40,14 +40,14 @@
 /* global io */
 import Item from 'components/Item'
 import Viewer from 'components/Viewer'
+import JsDiff from 'diff'
+import JSZip from 'jszip'
+import FileSaver from 'file-saver'
 
-var JsDiff = require('diff')
-var JSZip = require('jszip')
-var FileSaver = require('file-saver')
-var zip = new JSZip()
+const zip = new JSZip()
 
 function makeMarker () {
-  var marker = document.createElement('div')
+  let marker = document.createElement('div')
   marker.style.color = '#fba949'
   marker.innerHTML = '|'
   return marker
@@ -71,7 +71,7 @@ export default {
   },
   mounted () {
     let vm = this
-    var socket = io.connect()
+    const socket = io.connect()
     socket.on('list', function (list) {
       vm.list = list
     })
@@ -106,7 +106,7 @@ export default {
             gutters: ['CodeMirror-linenumbers', 'breakpoints']
           }
         }
-        let ext = path.split('.').pop()
+        const ext = path.split('.').pop()
         switch (ext) {
           case 'vue':
             newFile.editorOption.mode = 'script/x-vue'
@@ -154,10 +154,10 @@ export default {
       }
     },
     closeFile: function (path) {
-      var index = this.openFiles.findIndex(file => file.path === path)
+      const index = this.openFiles.findIndex(file => file.path === path)
       this.openFiles.splice(index, 1)
       if (this.currentOpenFilePath === path) {
-        let newIndex = (index <= 0) ? index : index - 1
+        const newIndex = (index <= 0) ? index : index - 1
         if (this.openFiles.length === 0) {
           this.currentOpenFilePath = ''
         } else {
@@ -168,37 +168,37 @@ export default {
     addUnseenFile: function (path) {
       if (!this.unseenFilePaths.find(unseen => unseen === path)) {
         this.unseenFilePaths.push(path)
-        var subPaths = path.split('/')
+        let subPaths = path.split('/')
         subPaths.shift()
         subPaths.shift()
         subPaths.forEach(subPath => {
-          var newPath = path.substring(0, path.search('/' + subPath))
+          const newPath = path.substring(0, path.search('/' + subPath))
           this.unseenFolderPaths.push({path: newPath + '/', file: path})
         })
       }
     },
     removeUnseenFile: function (path) {
-      var vm = this
-      let index = this.unseenFilePaths.indexOf(path)
+      let vm = this
+      const index = this.unseenFilePaths.indexOf(path)
       if (index !== -1) {
         this.unseenFilePaths.splice(index, 1)
-        let isOpen = this.unseenFolderPaths.filter(folder => folder.file === path)
+        const isOpen = this.unseenFolderPaths.filter(folder => folder.file === path)
         isOpen.forEach(() => {
-          let indexFolder = vm.unseenFolderPaths.findIndex(folder => folder.file === path)
+          const indexFolder = vm.unseenFolderPaths.findIndex(folder => folder.file === path)
           if (indexFolder !== -1) vm.unseenFolderPaths.splice(indexFolder, 1)
         })
       }
     },
     addUnseenLine: function (diff) {
       let count = 0
-      var lines = []
+      let lines = []
       diff.forEach(item => {
         if (item.added === undefined && item.removed === undefined) {
           count += item.count
         }
         if (item.added) {
           if (item.count > 1) {
-            for (var i = 0; i < item.count; i++) {
+            for (let i = 0; i < item.count; i++) {
               lines.push(parseInt(count))
               count++
             }
@@ -214,7 +214,7 @@ export default {
       return this.unseenFilePaths.find(path => path === file)
     },
     downloadZip () {
-      var vm = this
+      const vm = this
       this.getZip(this.list)
       setTimeout(function () {
         zip.generateAsync({type: 'blob'}).then(function (blob) {
@@ -223,21 +223,21 @@ export default {
       }, 1500)
     },
     getZip (lists) {
-      var vm = this
+      const vm = this
       lists.children.forEach(list => {
-        var type = list.path.split('.').pop().toUpperCase()
+        const type = list.path.split('.').pop().toUpperCase()
         if (list.type === 'directory') {
           this.getZip(list)
         } else if (list.type === 'file' && (type === 'PNG' || type === 'JPG' || type === 'JPEG' || type === 'ICO' || type === 'SVG' || type === 'GIF')) {
-          var img = document.createElement('img')
+          let img = document.createElement('img')
           img.src = 'files' + list.path
           img.onload = function () {
-            var c = document.createElement('canvas')
+            let c = document.createElement('canvas')
             c.width = this.naturalWidth
             c.height = this.naturalHeight
             c.getContext('2d').drawImage(this, 0, 0)
               // Get raw image data
-            var imgData = c.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, '')
+            const imgData = c.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, '')
             // save image file
             zip.file(vm.list.name + list.path, imgData, {base64: true})
           }
