@@ -303,6 +303,7 @@ html, body {
       background-color: #263238;
       transition: 0.1;
       cursor: pointer;
+      line-height: 10px;
     }
     .download-button:focus,
     .download-button:hover {
