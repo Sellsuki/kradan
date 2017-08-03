@@ -306,7 +306,7 @@ html, body {
     }
     .download-button:focus,
     .download-button:hover {
-      border-color: #E31A4C;
+      border-color: #58C6FC;
       outline: none;
     }
     .download-button:active {
