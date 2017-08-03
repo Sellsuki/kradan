@@ -324,7 +324,6 @@ html, body {
   }
   .right {
     float: right;
-    display: inline-block;
     width: 85vw;
     height: 100vh;
     padding-top: 8px;
@@ -419,9 +418,8 @@ li {
 }
 .CodeMirror {
    font-size: 1.2em;
-  /* line-height: 1.4em;  */
 }
 pre.CodeMirror-line {
   padding-left: 10px !important;
-} 
+}
 </style>
