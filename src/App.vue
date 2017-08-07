@@ -14,6 +14,7 @@
         </ul>
       </div>
       <div download  class="download-button" @click="downloadZip">
+        <i class="fa fa-download" aria-hidden="true"></i>&nbsp;
         {{list.name}}.zip
       </div>
     </div>
@@ -312,15 +313,6 @@ html, body {
     }
     .download-button:active {
       animation: enlight 0.5s;
-    }
-    .download-button::before {
-      content: '';
-      background: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/2037/download.svg') no-repeat center;
-      position: absolute;
-      top: 10px;
-      left: 0px;
-      height: 2vh;
-      width: 2.5vw ;
     }
   }
   .right {
