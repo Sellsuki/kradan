@@ -14,6 +14,7 @@
         </ul>
       </div>
       <div download  class="download-button" @click="downloadZip">
+        <i class="fa fa-download" aria-hidden="true"></i>&nbsp;
         {{list.name}}.zip
       </div>
     </div>
@@ -106,7 +107,7 @@ export default {
             mode: 'text/javascript',
             theme: 'material',
             lineNumbers: true,
-            lineWrapping: true,
+            lineWrapping: false,
             line: true,
             readOnly: true,
             gutters: ['CodeMirror-linenumbers', 'breakpoints']
@@ -286,6 +287,7 @@ html, body {
 }
 ::-webkit-scrollbar{
   width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-thumb{
   border-radius: 10px;
@@ -325,28 +327,19 @@ html, body {
       background-color: #263238;
       transition: 0.1;
       cursor: pointer;
+      line-height: 10px;
     }
     .download-button:focus,
     .download-button:hover {
-      border-color: #E31A4C;
+      border-color: #58C6FC;
       outline: none;
     }
     .download-button:active {
       animation: enlight 0.5s;
     }
-    .download-button::before {
-      content: '';
-      background: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/2037/download.svg') no-repeat center;
-      position: absolute;
-      top: 10px;
-      left: 0px;
-      height: 2vh;
-      width: 2.5vw ;
-    }
   }
   .right {
     float: right;
-    display: inline-block;
     width: 85vw;
     height: 100vh;
     padding-top: 8px;
@@ -440,6 +433,9 @@ li {
   }
 }
 .CodeMirror {
-  font-size: 1.2em;
+   font-size: 1.2em;
+}
+pre.CodeMirror-line {
+  padding-left: 10px !important;
 }
 </style>
