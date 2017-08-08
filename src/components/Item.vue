@@ -2,7 +2,8 @@
   <li :class="{'is-active-unseen': isActiveUnseen, 'is-active': currentOpenFilePath === model.path, 'is-unseen': isUnseen, 'is-none': isNone}">
     <div
       @click="onClick">
-      <span v-if="isFolder">{{open ? '▼' : '▶'}}</span>
+      <span v-if="isFolder">{{open ? '▼  ' : '▶ '}}</span>
+      <img :src="isIcon" width="15px" height="15px">
       {{model.name}}
     </div>
     <ul v-show="open" v-if="isFolder">
@@ -55,6 +56,28 @@ export default {
     },
     isActiveUnseen: function () {
       return this.currentOpenFilePath === this.model.path && this.isUnseen
+    },
+    isIcon () {
+      let icon = this.model.name.split('.').pop(-1)
+      if (this.model.type === 'directory') return '../../static/folder.png'
+      else if (this.model.name === 'package.json') return '../../static/npm.png'
+      else if (this.model.name === 'yarn.lock') return '../../static/yarn.png'
+      switch (icon) {
+        case 'js': return '../../static/js.png'
+        case 'log': return '../../static/log.ico'
+        case 'png': return '../../static/pic.png'
+        case 'ico': return '../../static/pic.png'
+        case 'jpg': return '../../static/pic.png'
+        case 'html': return '../../static/html.png'
+        case 'vue': return '../../static/vue.png'
+        case 'css': return '../../static/css.png'
+        case 'md': return '../../static/md.png'
+        case 'editorconfig': return '../../static/eslint.png'
+        case 'eslintignore': return '../../static/eslint.png'
+        case 'babelrc': return './../static/babel.png'
+        case 'jsx': return '../../static/jsx.png'
+        case 'ts': return '../../static/ts.png'
+      }
     }
   },
   methods: {
