@@ -73,7 +73,7 @@ export default {
   },
   computed: {
     divRight () {
-      return (window.innerWidth - this.divLeft) - 4
+      return (window.innerWidth - this.divLeft) - 10
     }
   },
   mounted () {
