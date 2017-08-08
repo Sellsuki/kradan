@@ -72,7 +72,7 @@ export default {
   },
   computed: {
     divRight () {
-      return window.innerWidth - this.divLeft
+      return (window.innerWidth - this.divLeft) - 4
     }
   },
   mounted () {
@@ -296,18 +296,15 @@ html, body {
   height: 100vh;
   background: #202A2F;
   .resize {
-    // background-color: red;
-    background-color: #373d40;
+    background-color: #1a1b1c;
     display: inline-block;
-    width: 4px;
+    width: 2px;
     height: 100vh;
     cursor: col-resize;
-    margin-left: -1%;
   }
   .left {
-    overflow: auto;
+    overflow-x: hidden;
     display: inline-block;
-    width: 15vw;
     height: 100vh;
     font-family: 'BlinkMacSystemFont', 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
     font-size: 14px;
