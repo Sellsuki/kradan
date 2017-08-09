@@ -1,6 +1,6 @@
 <template lang="html">
-  <div class="app">
-    <div class="left">
+  <div class="app" @mousemove="mousemove" @mouseup="mouseUp">
+    <div class="left" :style="{ 'width': divLeft + 'px' }">
       <div class="tree">
         <ul>
           <item
@@ -18,7 +18,8 @@
         {{list.name}}.zip
       </div>
     </div>
-    <div class="right">
+    <div class="resize" @mousedown="mouseDown"></div>
+    <div class="right" :style="{ 'width': divRight + 'px' }">
       <ul class="tabs">
         <li class="tabs-tab" v-for="file in openFiles" :class="{'is-active': currentOpenFilePath === file.path}" @click.self="openFile(file.path)">
           <span class="tabs-tab-name" @click.self="openFile(file.path)">{{file.name}}</span>
@@ -65,10 +66,15 @@ export default {
       openFiles: [],
       unseenFilePaths: [],
       unseenFolderPaths: [],
-      unseenLine: []
+      unseenLine: [],
+      mousePress: false,
+      divLeft: 200
     }
   },
   computed: {
+    divRight () {
+      return (window.innerWidth - this.divLeft) - 10
+    }
   },
   mounted () {
     let vm = this
@@ -249,6 +255,17 @@ export default {
           })
         }
       })
+    },
+    mouseDown (e) {
+      this.mousePress = true
+    },
+    mousemove (e) {
+      if (this.mousePress) {
+        this.divLeft = e.screenX
+      }
+    },
+    mouseUp (e) {
+      this.mousePress = false
     }
   },
   components: {
@@ -280,10 +297,16 @@ html, body {
   background: #FFF;
   height: 100vh;
   background: #202A2F;
-  .left {
-    overflow: auto;
+  .resize {
+    background-color: #1a1b1c;
     display: inline-block;
-    width: 15vw;
+    width: 2px;
+    height: 100vh;
+    cursor: col-resize;
+  }
+  .left {
+    overflow-x: hidden;
+    display: inline-block;
     height: 100vh;
     font-family: 'BlinkMacSystemFont', 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
     font-size: 14px;
