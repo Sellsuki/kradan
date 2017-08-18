@@ -223,39 +223,35 @@ export default {
     isUnseenTab (file) {
       return this.unseenFilePaths.find(path => path === file)
     },
-    downloadZip () {
-      const vm = this
-      this.getZip(this.list)
-      setTimeout(function () {
-        zip.generateAsync({type: 'blob'}).then(function (blob) {
-          FileSaver.saveAs(blob, vm.list.name + '.zip')
-        })
-      }, 1500)
+    async downloadZip () {
+      await this.getZip(this.list)
+      const blob = await zip.generateAsync({type: 'blob'})
+      FileSaver.saveAs(blob, this.list.name + '.zip')
     },
-    getZip (lists) {
-      const vm = this
-      lists.children.forEach(list => {
+    async getZip (lists) {
+      for (const list of lists.children) {
         const type = list.path.split('.').pop().toUpperCase()
         if (list.type === 'directory') {
-          this.getZip(list)
+          await this.getZip(list)
         } else if (list.type === 'file' && (type === 'PNG' || type === 'JPG' || type === 'JPEG' || type === 'ICO' || type === 'SVG' || type === 'GIF')) {
-          let img = document.createElement('img')
-          img.src = 'files' + list.path
-          img.onload = function () {
-            let c = document.createElement('canvas')
-            c.width = this.naturalWidth
-            c.height = this.naturalHeight
-            c.getContext('2d').drawImage(this, 0, 0)
-              // Get raw image data
-            const imgData = c.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, '')
-            // save image file
-            zip.file(vm.list.name + list.path, imgData, {base64: true})
-          }
-        } else if (list.type === 'file') {
-          // save file
-          this.$http.get('/files' + list.path).then((response) => {
-            zip.file(vm.list.name + list.path, response.body, {binary: true})
-          })
+          const imgData = await this.promiseImage(list)
+          zip.file(this.list.name + list.path, imgData, {base64: true})
+        } else if (list.type === 'file' && type !== 'MAP') {
+          const response = await this.$http.get('/files' + list.path)
+          zip.file(this.list.name + list.path, response.body, {binary: true})
+        }
+      }
+    },
+    promiseImage (list) {
+      return new Promise((resolve, reject) => {
+        let img = document.createElement('img')
+        img.src = 'files' + list.path
+        img.onload = function () {
+          let c = document.createElement('canvas')
+          c.width = this.naturalWidth
+          c.height = this.naturalHeight
+          c.getContext('2d').drawImage(this, 0, 0)
+          resolve(c.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, ''))
         }
       })
     },
