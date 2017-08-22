@@ -188,14 +188,13 @@ export default {
       }
     },
     removeUnseenFile: function (path) {
-      let vm = this
       const index = this.unseenFilePaths.indexOf(path)
       if (index !== -1) {
         this.unseenFilePaths.splice(index, 1)
         const isOpen = this.unseenFolderPaths.filter(folder => folder.file === path)
         isOpen.forEach(() => {
-          const indexFolder = vm.unseenFolderPaths.findIndex(folder => folder.file === path)
-          if (indexFolder !== -1) vm.unseenFolderPaths.splice(indexFolder, 1)
+          const indexFolder = this.unseenFolderPaths.findIndex(folder => folder.file === path)
+          if (indexFolder !== -1) this.unseenFolderPaths.splice(indexFolder, 1)
         })
       }
     },
