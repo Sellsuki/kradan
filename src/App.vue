@@ -156,11 +156,10 @@ export default {
     },
     openFile (path) {
       this.removeUnseenFile(path)
-      let vm = this
-      if (!vm.openFiles.find(file => file.path === path)) {
-        vm.getFile(path)
+      if (!this.openFiles.find(file => file.path === path)) {
+        this.getFile(path)
       } else {
-        vm.currentOpenFilePath = path
+        this.currentOpenFilePath = path
       }
     },
     closeFile: function (path) {
@@ -188,14 +187,13 @@ export default {
       }
     },
     removeUnseenFile: function (path) {
-      let vm = this
       const index = this.unseenFilePaths.indexOf(path)
       if (index !== -1) {
         this.unseenFilePaths.splice(index, 1)
         const isOpen = this.unseenFolderPaths.filter(folder => folder.file === path)
         isOpen.forEach(() => {
-          const indexFolder = vm.unseenFolderPaths.findIndex(folder => folder.file === path)
-          if (indexFolder !== -1) vm.unseenFolderPaths.splice(indexFolder, 1)
+          const indexFolder = this.unseenFolderPaths.findIndex(folder => folder.file === path)
+          if (indexFolder !== -1) this.unseenFolderPaths.splice(indexFolder, 1)
         })
       }
     },
