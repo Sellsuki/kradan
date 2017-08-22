@@ -156,11 +156,10 @@ export default {
     },
     openFile (path) {
       this.removeUnseenFile(path)
-      let vm = this
-      if (!vm.openFiles.find(file => file.path === path)) {
-        vm.getFile(path)
+      if (!this.openFiles.find(file => file.path === path)) {
+        this.getFile(path)
       } else {
-        vm.currentOpenFilePath = path
+        this.currentOpenFilePath = path
       }
     },
     closeFile: function (path) {
