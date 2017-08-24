@@ -94,9 +94,8 @@ export default {
   },
   methods: {
     getFile (path) {
-      let vm = this
-      vm.$http.get('/files' + path).then((response) => {
-        let name = path.split('/').pop()
+      this.$http.get('/files' + path).then((response) => {
+        const name = path.split('/').pop()
         let newFile = {
           name: name,
           path: path,
@@ -135,7 +134,7 @@ export default {
             newFile.editorOption.mode = 'text/javascript'
         }
 
-        let fileChanged = vm.openFiles.find(file => file.path === path)
+        let fileChanged = this.openFiles.find(file => file.path === path)
         if (fileChanged) {
           // diff line changed
           let code = (typeof response.body === 'string') ? response.body : ''
@@ -144,9 +143,9 @@ export default {
           fileChanged.code = code
         } else {
           newFile.code = (typeof response.body === 'string') ? response.body : ''
-          var index = vm.openFiles.findIndex(file => file.path === vm.currentOpenFilePath)
-          vm.openFiles.splice(index + 1, 0, newFile)
-          vm.currentOpenFilePath = path
+          var index = this.openFiles.findIndex(file => file.path === this.currentOpenFilePath)
+          this.openFiles.splice(index + 1, 0, newFile)
+          this.currentOpenFilePath = path
         }
       }, (response) => {
         console.log(response)
