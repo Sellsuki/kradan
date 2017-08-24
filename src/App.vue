@@ -77,20 +77,18 @@ export default {
     }
   },
   mounted () {
-    let vm = this
     const socket = io.connect()
     socket.on('list', (list) => {
       if (list.name.lastIndexOf('\\') !== -1) {
         list.name = list.name.substring(list.name.lastIndexOf('\\') + 1, list.name.length)
       }
-      vm.list = list
+      this.list = list
     })
     socket.on('change', (path) => {
-      console.log('change ' + path)
-      vm.addUnseenFile(path)
-      let fileChanged = vm.openFiles.find(file => file.path === path)
+      this.addUnseenFile(path)
+      let fileChanged = this.openFiles.find(file => file.path === path)
       if (fileChanged) {
-        vm.getFile(path)
+        this.getFile(path)
       }
     })
   },
