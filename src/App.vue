@@ -77,28 +77,25 @@ export default {
     }
   },
   mounted () {
-    let vm = this
     const socket = io.connect()
     socket.on('list', (list) => {
       if (list.name.lastIndexOf('\\') !== -1) {
         list.name = list.name.substring(list.name.lastIndexOf('\\') + 1, list.name.length)
       }
-      vm.list = list
+      this.list = list
     })
     socket.on('change', (path) => {
-      console.log('change ' + path)
-      vm.addUnseenFile(path)
-      let fileChanged = vm.openFiles.find(file => file.path === path)
+      this.addUnseenFile(path)
+      let fileChanged = this.openFiles.find(file => file.path === path)
       if (fileChanged) {
-        vm.getFile(path)
+        this.getFile(path)
       }
     })
   },
   methods: {
     getFile (path) {
-      let vm = this
-      vm.$http.get('/files' + path).then((response) => {
-        let name = path.split('/').pop()
+      this.$http.get('/files' + path).then((response) => {
+        const name = path.split('/').pop()
         let newFile = {
           name: name,
           path: path,
@@ -117,27 +114,9 @@ export default {
           }
         }
         const ext = path.split('.').pop()
-        switch (ext) {
-          case 'vue':
-            newFile.editorOption.mode = 'script/x-vue'
-            break
-          case 'html':
-            newFile.editorOption.mode = 'text/html'
-            break
-          case 'md':
-            newFile.editorOption.mode = 'text/x-markdown'
-            break
-          case 'jsx':
-            newFile.editorOption.mode = 'text/jsx'
-            break
-          case 'css':
-            newFile.editorOption.mode = 'text/css'
-            break
-          default:
-            newFile.editorOption.mode = 'text/javascript'
-        }
+        newFile.editorOption.mode = this.getEditorOption(ext)
 
-        let fileChanged = vm.openFiles.find(file => file.path === path)
+        let fileChanged = this.openFiles.find(file => file.path === path)
         if (fileChanged) {
           // diff line changed
           let code = (typeof response.body === 'string') ? response.body : ''
@@ -146,13 +125,29 @@ export default {
           fileChanged.code = code
         } else {
           newFile.code = (typeof response.body === 'string') ? response.body : ''
-          var index = vm.openFiles.findIndex(file => file.path === vm.currentOpenFilePath)
-          vm.openFiles.splice(index + 1, 0, newFile)
-          vm.currentOpenFilePath = path
+          const index = this.openFiles.findIndex(file => file.path === this.currentOpenFilePath)
+          this.openFiles.splice(index + 1, 0, newFile)
+          this.currentOpenFilePath = path
         }
       }, (response) => {
         console.log(response)
       })
+    },
+    getEditorOption (extention) {
+      switch (extention) {
+        case 'vue':
+          return 'script/x-vue'
+        case 'html':
+          return 'text/html'
+        case 'md':
+          return 'text/x-markdown'
+        case 'jsx':
+          return 'text/jsx'
+        case 'css':
+          return 'text/css'
+        default:
+          return 'text/javascript'
+      }
     },
     openFile (path) {
       this.removeUnseenFile(path)
