@@ -114,25 +114,7 @@ export default {
           }
         }
         const ext = path.split('.').pop()
-        switch (ext) {
-          case 'vue':
-            newFile.editorOption.mode = 'script/x-vue'
-            break
-          case 'html':
-            newFile.editorOption.mode = 'text/html'
-            break
-          case 'md':
-            newFile.editorOption.mode = 'text/x-markdown'
-            break
-          case 'jsx':
-            newFile.editorOption.mode = 'text/jsx'
-            break
-          case 'css':
-            newFile.editorOption.mode = 'text/css'
-            break
-          default:
-            newFile.editorOption.mode = 'text/javascript'
-        }
+        newFile.editorOption.mode = this.getEditorOption(ext)
 
         let fileChanged = this.openFiles.find(file => file.path === path)
         if (fileChanged) {
@@ -143,13 +125,29 @@ export default {
           fileChanged.code = code
         } else {
           newFile.code = (typeof response.body === 'string') ? response.body : ''
-          var index = this.openFiles.findIndex(file => file.path === this.currentOpenFilePath)
+          const index = this.openFiles.findIndex(file => file.path === this.currentOpenFilePath)
           this.openFiles.splice(index + 1, 0, newFile)
           this.currentOpenFilePath = path
         }
       }, (response) => {
         console.log(response)
       })
+    },
+    getEditorOption (extention) {
+      switch (extention) {
+        case 'vue':
+          return 'script/x-vue'
+        case 'html':
+          return 'text/html'
+        case 'md':
+          return 'text/x-markdown'
+        case 'jsx':
+          return 'text/jsx'
+        case 'css':
+          return 'text/css'
+        default:
+          return 'text/javascript'
+      }
     },
     openFile (path) {
       this.removeUnseenFile(path)
