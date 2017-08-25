@@ -16,7 +16,7 @@ export default {
   props: ['info', 'unseenLine'],
   computed: {
     isImage () {
-      let type = this.info.path.split('.').pop()
+      const type = this.info.path.split('.').pop()
       switch (type.toUpperCase()) {
         case 'PNG':
         case 'JPG':

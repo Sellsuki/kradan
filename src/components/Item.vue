@@ -58,7 +58,7 @@ export default {
       return this.currentOpenFilePath === this.model.path && this.isUnseen
     },
     isIcon () {
-      let icon = this.model.name.split('.').pop(-1)
+      const icon = this.model.name.split('.').pop(-1)
       if (this.model.type === 'directory') return '../../static/folder.png'
       else if (this.model.name === 'package.json') return '../../static/npm.png'
       else if (this.model.name === 'yarn.lock') return '../../static/yarn.png'
