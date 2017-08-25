@@ -119,7 +119,7 @@ export default {
         let fileChanged = this.openFiles.find(file => file.path === path)
         if (fileChanged) {
           // diff line changed
-          let code = (typeof response.body === 'string') ? response.body : ''
+          const code = (typeof response.body === 'string') ? response.body : ''
           let diff = JsDiff.diffLines(fileChanged.code, code)
           fileChanged.unseenLines = this.addUnseenLine(diff)
           fileChanged.code = code
