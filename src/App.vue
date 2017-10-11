@@ -1,6 +1,6 @@
 <template lang="html">
-  <div class="app">
-    <div class="left">
+  <div class="app" @mousemove="mousemove" @mouseup="mouseUp">
+    <div class="left" :style="{ 'width': divLeft + 'px' }">
       <div class="tree">
         <ul>
           <item
@@ -14,10 +14,12 @@
         </ul>
       </div>
       <div download  class="download-button" @click="downloadZip">
+        <i class="fa fa-download" aria-hidden="true"></i>&nbsp;
         {{list.name}}.zip
       </div>
     </div>
-    <div class="right">
+    <div class="resize" @mousedown="mouseDown"></div>
+    <div class="right" :style="{ 'width': divRight + 'px' }">
       <ul class="tabs">
         <li class="tabs-tab" v-for="file in openFiles" :class="{'is-active': currentOpenFilePath === file.path}" @click.self="openFile(file.path)">
           <span class="tabs-tab-name" @click.self="openFile(file.path)">{{file.name}}</span>
@@ -64,31 +66,36 @@ export default {
       openFiles: [],
       unseenFilePaths: [],
       unseenFolderPaths: [],
-      unseenLine: []
+      unseenLine: [],
+      mousePress: false,
+      divLeft: 200
     }
   },
   computed: {
+    divRight () {
+      return (window.innerWidth - this.divLeft) - 10
+    }
   },
   mounted () {
-    let vm = this
     const socket = io.connect()
-    socket.on('list', function (list) {
-      vm.list = list
+    socket.on('list', (list) => {
+      if (list.name.lastIndexOf('\\') !== -1) {
+        list.name = list.name.substring(list.name.lastIndexOf('\\') + 1, list.name.length)
+      }
+      this.list = list
     })
-    socket.on('change', function (path) {
-      console.log('change ' + path)
-      vm.addUnseenFile(path)
-      let fileChanged = vm.openFiles.find(file => file.path === path)
+    socket.on('change', (path) => {
+      this.addUnseenFile(path)
+      let fileChanged = this.openFiles.find(file => file.path === path)
       if (fileChanged) {
-        vm.getFile(path)
+        this.getFile(path)
       }
     })
   },
   methods: {
     getFile (path) {
-      let vm = this
-      vm.$http.get('/files' + path).then((response) => {
-        let name = path.split('/').pop()
+      this.$http.get('/files' + path).then((response) => {
+        const name = path.split('/').pop()
         let newFile = {
           name: name,
           path: path,
@@ -107,50 +114,47 @@ export default {
           }
         }
         const ext = path.split('.').pop()
-        switch (ext) {
-          case 'vue':
-            newFile.editorOption.mode = 'script/x-vue'
-            break
-          case 'html':
-            newFile.editorOption.mode = 'text/html'
-            break
-          case 'md':
-            newFile.editorOption.mode = 'text/x-markdown'
-            break
-          case 'jsx':
-            newFile.editorOption.mode = 'text/jsx'
-            break
-          case 'css':
-            newFile.editorOption.mode = 'text/css'
-            break
-          default:
-            newFile.editorOption.mode = 'text/javascript'
-        }
+        newFile.editorOption.mode = this.getEditorOption(ext)
 
-        let fileChanged = vm.openFiles.find(file => file.path === path)
+        let fileChanged = this.openFiles.find(file => file.path === path)
         if (fileChanged) {
           // diff line changed
-          let code = (typeof response.body === 'string') ? response.body : ''
+          const code = (typeof response.body === 'string') ? response.body : ''
           let diff = JsDiff.diffLines(fileChanged.code, code)
           fileChanged.unseenLines = this.addUnseenLine(diff)
           fileChanged.code = code
         } else {
           newFile.code = (typeof response.body === 'string') ? response.body : ''
-          var index = vm.openFiles.findIndex(file => file.path === vm.currentOpenFilePath)
-          vm.openFiles.splice(index + 1, 0, newFile)
-          vm.currentOpenFilePath = path
+          const index = this.openFiles.findIndex(file => file.path === this.currentOpenFilePath)
+          this.openFiles.splice(index + 1, 0, newFile)
+          this.currentOpenFilePath = path
         }
       }, (response) => {
         console.log(response)
       })
     },
+    getEditorOption (extention) {
+      switch (extention) {
+        case 'vue':
+          return 'script/x-vue'
+        case 'html':
+          return 'text/html'
+        case 'md':
+          return 'text/x-markdown'
+        case 'jsx':
+          return 'text/jsx'
+        case 'css':
+          return 'text/css'
+        default:
+          return 'text/javascript'
+      }
+    },
     openFile (path) {
       this.removeUnseenFile(path)
-      let vm = this
-      if (!vm.openFiles.find(file => file.path === path)) {
-        vm.getFile(path)
+      if (!this.openFiles.find(file => file.path === path)) {
+        this.getFile(path)
       } else {
-        vm.currentOpenFilePath = path
+        this.currentOpenFilePath = path
       }
     },
     closeFile: function (path) {
@@ -178,14 +182,13 @@ export default {
       }
     },
     removeUnseenFile: function (path) {
-      let vm = this
       const index = this.unseenFilePaths.indexOf(path)
       if (index !== -1) {
         this.unseenFilePaths.splice(index, 1)
         const isOpen = this.unseenFolderPaths.filter(folder => folder.file === path)
         isOpen.forEach(() => {
-          const indexFolder = vm.unseenFolderPaths.findIndex(folder => folder.file === path)
-          if (indexFolder !== -1) vm.unseenFolderPaths.splice(indexFolder, 1)
+          const indexFolder = this.unseenFolderPaths.findIndex(folder => folder.file === path)
+          if (indexFolder !== -1) this.unseenFolderPaths.splice(indexFolder, 1)
         })
       }
     },
@@ -213,41 +216,48 @@ export default {
     isUnseenTab (file) {
       return this.unseenFilePaths.find(path => path === file)
     },
-    downloadZip () {
-      const vm = this
-      this.getZip(this.list)
-      setTimeout(function () {
-        zip.generateAsync({type: 'blob'}).then(function (blob) {
-          FileSaver.saveAs(blob, vm.list.name + '.zip')
-        })
-      }, 1500)
+    async downloadZip () {
+      await this.getZip(this.list)
+      const blob = await zip.generateAsync({type: 'blob'})
+      FileSaver.saveAs(blob, this.list.name + '.zip')
     },
-    getZip (lists) {
-      const vm = this
-      lists.children.forEach(list => {
+    async getZip (lists) {
+      for (const list of lists.children) {
         const type = list.path.split('.').pop().toUpperCase()
         if (list.type === 'directory') {
-          this.getZip(list)
+          await this.getZip(list)
         } else if (list.type === 'file' && (type === 'PNG' || type === 'JPG' || type === 'JPEG' || type === 'ICO' || type === 'SVG' || type === 'GIF')) {
-          let img = document.createElement('img')
-          img.src = 'files' + list.path
-          img.onload = function () {
-            let c = document.createElement('canvas')
-            c.width = this.naturalWidth
-            c.height = this.naturalHeight
-            c.getContext('2d').drawImage(this, 0, 0)
-              // Get raw image data
-            const imgData = c.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, '')
-            // save image file
-            zip.file(vm.list.name + list.path, imgData, {base64: true})
-          }
-        } else if (list.type === 'file') {
-          // save file
-          this.$http.get('/files' + list.path).then((response) => {
-            zip.file(vm.list.name + list.path, response.body, {binary: true})
-          })
+          const imgData = await this.promiseImage(list)
+          zip.file(this.list.name + list.path, imgData, {base64: true})
+        } else if (list.type === 'file' && type !== 'MAP') {
+          const response = await this.$http.get('/files' + list.path)
+          zip.file(this.list.name + list.path, response.body, {binary: true})
+        }
+      }
+    },
+    promiseImage (list) {
+      return new Promise((resolve, reject) => {
+        let img = document.createElement('img')
+        img.src = 'files' + list.path
+        img.onload = function () {
+          let c = document.createElement('canvas')
+          c.width = this.naturalWidth
+          c.height = this.naturalHeight
+          c.getContext('2d').drawImage(this, 0, 0)
+          resolve(c.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, ''))
         }
       })
+    },
+    mouseDown (e) {
+      this.mousePress = true
+    },
+    mousemove (e) {
+      if (this.mousePress) {
+        this.divLeft = e.screenX
+      }
+    },
+    mouseUp (e) {
+      this.mousePress = false
     }
   },
   components: {
@@ -279,21 +289,27 @@ html, body {
   background: #FFF;
   height: 100vh;
   background: #202A2F;
-  .left {
-    overflow: auto;
+  .resize {
+    background-color: #1a1b1c;
     display: inline-block;
-    width: 15vw;
+    width: 2px;
+    height: 100vh;
+    cursor: col-resize;
+  }
+  .left {
+    overflow-x: hidden;
+    display: inline-block;
     height: 100vh;
     font-family: 'BlinkMacSystemFont', 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
     font-size: 14px;
     .tree {
       height: 92vh;
+      display: inline-block;
+      margin-bottom: 0%;
     }
     .download-button {
-      width: 12vw;
-      height: 3vh;
-      margin-left: 1vw;
-      padding-top: 12px;
+      margin: 0 2vw;
+      padding: 12px;
       text-align: center;
       position: relative;
       text-decoration: none;
@@ -301,28 +317,27 @@ html, body {
       background-color: #263238;
       transition: 0.1;
       cursor: pointer;
+      line-height: 10px;
+      white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+      white-space: -webkit-pre-wrap; /*Chrome & Safari */
+      white-space: -pre-wrap;      /* Opera 4-6 */
+      white-space: -o-pre-wrap;    /* Opera 7 */
+      white-space: pre-wrap;       /* css-3 */
+      word-wrap: break-word;       /* Internet Explorer 5.5+ */
+      word-break: break-all;
+      white-space: normal;
     }
     .download-button:focus,
     .download-button:hover {
-      border-color: #E31A4C;
+      border-color: #58C6FC;
       outline: none;
     }
     .download-button:active {
       animation: enlight 0.5s;
     }
-    .download-button::before {
-      content: '';
-      background: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/2037/download.svg') no-repeat center;
-      position: absolute;
-      top: 10px;
-      left: 0px;
-      height: 2vh;
-      width: 2.5vw ;
-    }
   }
   .right {
     float: right;
-    display: inline-block;
     width: 85vw;
     height: 100vh;
     padding-top: 8px;
@@ -417,9 +432,8 @@ li {
 }
 .CodeMirror {
    font-size: 1.2em;
-  /* line-height: 1.4em;  */
 }
 pre.CodeMirror-line {
   padding-left: 10px !important;
-} 
+}
 </style>
