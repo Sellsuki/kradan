@@ -128,7 +128,6 @@ export default {
           newFile.code = ''
           if (typeof response.body === 'string') newFile.code = response.body
           else if (typeof response.body === 'object') newFile.code = JSON.stringify(response.body)
-          newFile.code = (typeof response.body === 'string') ? response.body : ''
           const index = this.openFiles.findIndex(file => file.path === this.currentOpenFilePath)
           this.openFiles.splice(index + 1, 0, newFile)
           this.currentOpenFilePath = path
