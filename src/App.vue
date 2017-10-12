@@ -115,8 +115,6 @@ export default {
         }
         const ext = path.split('.').pop()
         newFile.editorOption.mode = this.getEditorOption(ext)
-        // sss
-        // ssss
         let fileChanged = this.openFiles.find(file => file.path === path)
         if (fileChanged) {
           // diff line changed
