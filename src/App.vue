@@ -42,7 +42,7 @@
 /* global io */
 import Item from 'components/Item'
 import Viewer from 'components/Viewer'
-import JsDiff from 'diff'
+const JsDiff = require('diff')
 import JSZip from 'jszip'
 import FileSaver from 'file-saver'
 
