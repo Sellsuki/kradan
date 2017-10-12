@@ -29,7 +29,7 @@ colors.setTheme({
   error: 'red'
 })
 
-if (argv.h || argv.help) {
+if (argv.h || argv.help || argv._.length) {
   console.log(`
     Online code viewer with realtime updates.
 
@@ -37,8 +37,9 @@ if (argv.h || argv.help) {
       $ kradan
 
     Options:
-      -h, --help    Display help messages
-      -p, --port    Specify port number
+      -h, --help      Display help messages
+      -v, --version   Display current kradan version
+      -p, --port      Specify port number
 
     Examples:
       ${colors.data('# Display help messages')}
@@ -47,7 +48,8 @@ if (argv.h || argv.help) {
       $ kradan -p 8080
       ${colors.data('# Start server on port 8080')}
       $ kradan --port=8080
-  `)
+      ${colors.data('# Display version')}
+      $ kradan --version`)
   return
 }
 
@@ -57,7 +59,7 @@ if (argv.v || argv.version) {
 }
 
 /* port validation */
-if (!Number.isInteger(port) || !(port > 1023 && port < 65535)) {
+if (!Number.isInteger(port) || !(port >= 1024 && port <= 65535)) {
   console.log(colors.error('Please specify a valid port number.'))
   return
 }
