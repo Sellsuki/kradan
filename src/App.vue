@@ -42,7 +42,7 @@
 /* global io */
 import Item from 'components/Item'
 import Viewer from 'components/Viewer'
-import JsDiff from 'diff'
+const JsDiff = require('diff')
 import JSZip from 'jszip'
 import FileSaver from 'file-saver'
 
@@ -115,15 +115,21 @@ export default {
         }
         const ext = path.split('.').pop()
         newFile.editorOption.mode = this.getEditorOption(ext)
-
+        // sss
+        // ssss
         let fileChanged = this.openFiles.find(file => file.path === path)
         if (fileChanged) {
           // diff line changed
-          const code = (typeof response.body === 'string') ? response.body : ''
+          let code = ''
+          if (typeof response.body === 'string') code = response.body
+          else if (typeof response.body === 'object') code = JSON.stringify(response.body)
           let diff = JsDiff.diffLines(fileChanged.code, code)
           fileChanged.unseenLines = this.addUnseenLine(diff)
           fileChanged.code = code
         } else {
+          newFile.code = ''
+          if (typeof response.body === 'string') newFile.code = response.body
+          else if (typeof response.body === 'object') newFile.code = JSON.stringify(response.body)
           newFile.code = (typeof response.body === 'string') ? response.body : ''
           const index = this.openFiles.findIndex(file => file.path === this.currentOpenFilePath)
           this.openFiles.splice(index + 1, 0, newFile)
