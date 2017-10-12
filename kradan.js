@@ -10,6 +10,8 @@ var helper = require('./helper.js')
 var path = require('path')
 var os = require('os')
 var colors = require('colors/safe')
+var minimist = require('minimist')
+var port = minimist(process.argv.slice(2)).p || 1112
 
 var ifaces = os.networkInterfaces()
 colors.setTheme({
@@ -24,6 +26,13 @@ colors.setTheme({
   debug: 'blue',
   error: 'red'
 })
+
+/* port validation */
+if (!Number.isInteger(port) || !(port > 1023 && port < 65535)) {
+  console.log(colors.error('Please specify a valid port number.'))
+  return
+}
+
 var data = {}
 data.ls = helper.getDirJson('.')
 data.list = helper.getDirList('.')
@@ -84,13 +93,13 @@ chokidar.watch('.', {
   }
 })
 
-http.listen(1112, function () {
+http.listen(port, function () {
   console.log(colors.warn('Starting up kradan'))
   console.log(colors.warn('Available on:'))
   Object.keys(ifaces).forEach(function (dev) {
     ifaces[dev].forEach(function (details) {
       if (details.family === 'IPv4') {
-        console.log(colors.info('  http://' + details.address + ':1112'))
+        console.log(colors.info('  http://' + details.address + `:${port}`))
       }
     })
   })
