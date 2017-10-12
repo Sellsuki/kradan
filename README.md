@@ -10,6 +10,7 @@
 sudo npm install -g kradan
 kradan
 ```
+![logo](https://rawgit.com/devilmustcry/kradan/master/usage-tutorial.gif)
 
 ## Build Setup
 
