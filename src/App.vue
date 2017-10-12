@@ -93,48 +93,42 @@ export default {
     })
   },
   methods: {
-    getFile (path) {
-      this.$http.get('/files' + path).then((response) => {
-        const name = path.split('/').pop()
-        let newFile = {
-          name: name,
-          path: path,
-          code: '',
-          unseenLines: [],
-          marker: makeMarker,
-          editorOption: {
-            tabSize: 4,
-            mode: 'text/javascript',
-            theme: 'material',
-            lineNumbers: true,
-            lineWrapping: false,
-            line: true,
-            readOnly: true,
-            gutters: ['CodeMirror-linenumbers', 'breakpoints']
-          }
+    async getFile (path) {
+      let response = await this.$http.get('/files' + path)
+      const name = path.split('/').pop()
+      let newFile = {
+        name: name,
+        path: path,
+        code: '',
+        unseenLines: [],
+        marker: makeMarker,
+        editorOption: {
+          tabSize: 4,
+          mode: 'text/javascript',
+          theme: 'material',
+          lineNumbers: true,
+          lineWrapping: false,
+          line: true,
+          readOnly: true,
+          gutters: ['CodeMirror-linenumbers', 'breakpoints']
         }
-        const ext = path.split('.').pop()
-        newFile.editorOption.mode = this.getEditorOption(ext)
-        let fileChanged = this.openFiles.find(file => file.path === path)
-        if (fileChanged) {
-          // diff line changed
-          let code = ''
-          if (typeof response.body === 'string') code = response.body
-          else if (typeof response.body === 'object') code = JSON.stringify(response.body)
-          let diff = JsDiff.diffLines(fileChanged.code, code)
-          fileChanged.unseenLines = this.addUnseenLine(diff)
-          fileChanged.code = code
-        } else {
-          newFile.code = ''
-          if (typeof response.body === 'string') newFile.code = response.body
-          else if (typeof response.body === 'object') newFile.code = JSON.stringify(response.body)
-          const index = this.openFiles.findIndex(file => file.path === this.currentOpenFilePath)
-          this.openFiles.splice(index + 1, 0, newFile)
-          this.currentOpenFilePath = path
-        }
-      }, (response) => {
-        console.log(response)
-      })
+      }
+      const ext = path.split('.').pop()
+      newFile.editorOption.mode = this.getEditorOption(ext)
+
+      let fileChanged = this.openFiles.find(file => file.path === path)
+      if (fileChanged) {
+        // diff line changed
+        const code = (typeof response.body === 'string') ? response.body : ''
+        let diff = JsDiff.diffLines(fileChanged.code, code)
+        fileChanged.unseenLines = this.addUnseenLine(diff)
+        fileChanged.code = code
+      } else {
+        newFile.code = (typeof response.body === 'string') ? response.body : ''
+        const index = this.openFiles.findIndex(file => file.path === this.currentOpenFilePath)
+        this.openFiles.splice(index + 1, 0, newFile)
+        this.currentOpenFilePath = path
+      }
     },
     getEditorOption (extention) {
       switch (extention) {
