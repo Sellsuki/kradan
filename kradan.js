@@ -11,7 +11,9 @@ var path = require('path')
 var os = require('os')
 var colors = require('colors/safe')
 var minimist = require('minimist')
-var port = minimist(process.argv.slice(2)).p || 1112
+var version = require('./package.json').version
+var argv = minimist(process.argv.slice(2))
+var port = argv.port || argv.p || 1112
 
 var ifaces = os.networkInterfaces()
 colors.setTheme({
@@ -27,8 +29,37 @@ colors.setTheme({
   error: 'red'
 })
 
+if (argv.h || argv.help || argv._.length) {
+  console.log(`
+    Online code viewer with realtime updates.
+
+    Usage:
+      $ kradan
+
+    Options:
+      -h, --help      Display help messages
+      -v, --version   Display current kradan version
+      -p, --port      Specify port number
+
+    Examples:
+      ${colors.data('# Display help messages')}
+      $ kradan --help
+      ${colors.data('# Start server on port 8080')}
+      $ kradan -p 8080
+      ${colors.data('# Start server on port 8080')}
+      $ kradan --port=8080
+      ${colors.data('# Display version')}
+      $ kradan --version`)
+  return
+}
+
+if (argv.v || argv.version) {
+  console.log(version)
+  return
+}
+
 /* port validation */
-if (!Number.isInteger(port) || !(port > 1023 && port < 65535)) {
+if (!Number.isInteger(port) || !(port >= 1024 && port <= 65535)) {
   console.log(colors.error('Please specify a valid port number.'))
   return
 }
