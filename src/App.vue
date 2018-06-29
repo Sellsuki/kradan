@@ -14,24 +14,31 @@
         </ul>
       </div>
       <div download  class="download-button" @click="downloadZip">
-        <i class="fa fa-download" aria-hidden="true"></i>&nbsp;
+        <i class="fas fa-download"></i>&nbsp;
         {{list.name}}.zip
       </div>
     </div>
     <div class="resize" @mousedown="mouseDown"></div>
     <div class="right" :style="{ 'width': divRight + 'px' }">
       <ul class="tabs">
-        <li class="tabs-tab" v-for="file in openFiles" :class="{'is-active': currentOpenFilePath === file.path}" @click.self="openFile(file.path)">
+        <li class="tabs-tab"
+          v-for="file in openFiles"
+          :class="{'is-active': currentOpenFilePath === file.path}"
+          @click.self="openFile(file.path)"
+          :key="file.path">
           <span class="tabs-tab-name" @click.self="openFile(file.path)">{{file.name}}</span>
           <span class="icon" @click="closeFile(file.path)" style="float: right;">
-            <i class="fa fa-close" aria-hidden="true" v-show="!isUnseenTab(file.path)"></i>
-            <i class="fa fa-pencil" aria-hidden="true" v-show="isUnseenTab(file.path)"></i>
+            <i class="fas fa-times" v-show="!isUnseenTab(file.path)"></i>
+            <i class="fas fa-edit" v-show="isUnseenTab(file.path)"></i>
           </span>
         </li>
       </ul>
       <div class="item-views">
-        <div v-for="openFile in openFiles">
-          <viewer v-if="currentOpenFilePath === openFile.path" :info="openFile" :unseen-line="unseenLine"></viewer>
+        <div v-for="openFile in openFiles" :key="openFile.path">
+          <viewer
+          v-if="currentOpenFilePath === openFile.path"
+          :info="openFile"
+          :unseen-line="unseenLine"></viewer>
         </div>
       </div>
     </div>
@@ -39,12 +46,15 @@
 </template>
 
 <script>
-/* global io */
-import Item from 'components/Item'
-import Viewer from 'components/Viewer'
-const JsDiff = require('diff')
 import JSZip from 'jszip'
 import FileSaver from 'file-saver'
+import io from 'socket.io-client'
+import beautify from 'js-beautify'
+
+const Viewer = () => import('@/components/Viewer')
+const Item = () => import('@/components/Item')
+
+const JsDiff = require('diff')
 
 const zip = new JSZip()
 
@@ -55,6 +65,7 @@ function makeMarker () {
   return marker
 }
 export default {
+  name: 'App',
   data () {
     return {
       list: {
@@ -77,7 +88,7 @@ export default {
     }
   },
   mounted () {
-    const socket = io.connect()
+    const socket = io.connect(this.$host)
     socket.on('list', (list) => {
       if (list.name.lastIndexOf('\\') !== -1) {
         list.name = list.name.substring(list.name.lastIndexOf('\\') + 1, list.name.length)
@@ -104,27 +115,43 @@ export default {
         marker: makeMarker,
         editorOption: {
           tabSize: 4,
-          mode: 'text/javascript',
           theme: 'material',
           lineNumbers: true,
           lineWrapping: false,
           line: true,
           readOnly: true,
-          gutters: ['CodeMirror-linenumbers', 'breakpoints']
+          foldGutter: true,
+          gutters: ['CodeMirror-linenumbers', 'breakpoints', 'CodeMirror-foldgutter']
         }
       }
+
       const ext = path.split('.').pop()
       newFile.editorOption.mode = this.getEditorOption(ext)
 
       let fileChanged = this.openFiles.find(file => file.path === path)
       if (fileChanged) {
         // diff line changed
-        const code = (typeof response.body === 'string') ? response.body : ''
+        let code = ''
+
+        if (typeof response.data === 'string') {
+          code = response.data
+        } else if (typeof response.data === 'object') {
+          code = beautify(JSON.stringify(response.data))
+        }
+
         let diff = JsDiff.diffLines(fileChanged.code, code)
+
         fileChanged.unseenLines = this.addUnseenLine(diff)
         fileChanged.code = code
       } else {
-        newFile.code = (typeof response.body === 'string') ? response.body : ''
+        newFile.code = ''
+
+        if (typeof response.data === 'string') {
+          newFile.code = response.data
+        } else if (typeof response.data === 'object') {
+          newFile.code = beautify(JSON.stringify(response.data))
+        }
+
         const index = this.openFiles.findIndex(file => file.path === this.currentOpenFilePath)
         this.openFiles.splice(index + 1, 0, newFile)
         this.currentOpenFilePath = path
@@ -228,7 +255,7 @@ export default {
           zip.file(this.list.name + list.path, imgData, {base64: true})
         } else if (list.type === 'file' && type !== 'MAP') {
           const response = await this.$http.get('/files' + list.path)
-          zip.file(this.list.name + list.path, response.body, {binary: true})
+          zip.file(this.list.name + list.path, response.data, {binary: true})
         }
       }
     },

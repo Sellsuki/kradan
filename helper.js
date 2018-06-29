@@ -17,12 +17,12 @@ let splitPath = function (path) {
 
 let getDirList = function (path) {
   var list = readDir.readSync(path, null, readDir.INCLUDE_DIRECTORIES + readDir.INCLUDE_HIDDEN)
-  return _.filter(list, (i) => !i.match(/[\/\\]\.|node_modules|\.git|\.DS_Store/))
+  return _.filter(list, (i) => !i.match(/[\\]\.|node_modules|\.git|\.DS_Store/))
 }
 
 let getDirJson = function (path) {
   var list = readDir.readSync(path, null, readDir.INCLUDE_DIRECTORIES + readDir.INCLUDE_HIDDEN)
-  list = _.filter(list, (i) => !i.match(/[\/\\]\.|node_modules|\.git|\.DS_Store/))
+  list = _.filter(list, (i) => !i.match(/[\\]\.|node_modules|\.git|\.DS_Store/))
 
   var result = []
 
