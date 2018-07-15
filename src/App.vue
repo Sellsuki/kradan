@@ -55,15 +55,8 @@ const Viewer = () => import('@/components/Viewer')
 const Item = () => import('@/components/Item')
 
 const JsDiff = require('diff')
-
 const zip = new JSZip()
 
-function makeMarker () {
-  let marker = document.createElement('div')
-  marker.style.color = '#fba949'
-  marker.innerHTML = '|'
-  return marker
-}
 export default {
   name: 'App',
   data () {
@@ -112,7 +105,12 @@ export default {
         path: path,
         code: '',
         unseenLines: [],
-        marker: makeMarker,
+        marker: () => {
+          let marker = document.createElement('div')
+          marker.style.color = '#fba949'
+          marker.innerHTML = '|'
+          return marker
+        },
         editorOption: {
           tabSize: 4,
           theme: 'material',
@@ -125,8 +123,7 @@ export default {
         }
       }
 
-      const ext = path.split('.').pop()
-      newFile.editorOption.mode = this.getEditorOption(ext)
+      // const ext = path.split('.').pop()
 
       let fileChanged = this.openFiles.find(file => file.path === path)
       if (fileChanged) {
@@ -155,22 +152,6 @@ export default {
         const index = this.openFiles.findIndex(file => file.path === this.currentOpenFilePath)
         this.openFiles.splice(index + 1, 0, newFile)
         this.currentOpenFilePath = path
-      }
-    },
-    getEditorOption (extention) {
-      switch (extention) {
-        case 'vue':
-          return 'script/x-vue'
-        case 'html':
-          return 'text/html'
-        case 'md':
-          return 'text/x-markdown'
-        case 'jsx':
-          return 'text/jsx'
-        case 'css':
-          return 'text/css'
-        default:
-          return 'text/javascript'
       }
     },
     openFile (path) {
@@ -252,6 +233,7 @@ export default {
           await this.getZip(list)
         } else if (list.type === 'file' && (type === 'PNG' || type === 'JPG' || type === 'JPEG' || type === 'ICO' || type === 'SVG' || type === 'GIF')) {
           const imgData = await this.promiseImage(list)
+          console.log(imgData)
           zip.file(this.list.name + list.path, imgData, {base64: true})
         } else if (list.type === 'file' && type !== 'MAP') {
           const response = await this.$http.get('/files' + list.path)
@@ -262,7 +244,8 @@ export default {
     promiseImage (list) {
       return new Promise((resolve, reject) => {
         let img = document.createElement('img')
-        img.src = 'files' + list.path
+        img.setAttribute('crossorigin', 'anonymous')
+        img.src = this.$baseApiUrl + 'files' + list.path
         img.onload = function () {
           let c = document.createElement('canvas')
           c.width = this.naturalWidth

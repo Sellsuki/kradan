@@ -9,6 +9,8 @@ Vue.prototype.$isProduction = process.env.NODE_ENV === 'production'
 
 let host
 
+Vue.config.performance = true
+
 if (process.env.NODE_ENV !== 'production') {
   host = 'localhost:1112'
 } else {

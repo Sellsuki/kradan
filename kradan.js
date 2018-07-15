@@ -1,22 +1,22 @@
 #!/usr/bin/env node
 'use strict'
 
-var express = require('express')
-var app = express()
-var http = require('http').Server(app)
-var io = require('socket.io')(http)
-var chokidar = require('chokidar')
-var helper = require('./helper.js')
-var path = require('path')
-var os = require('os')
-var colors = require('colors/safe')
-var minimist = require('minimist')
-var version = require('./package.json').version
-var argv = minimist(process.argv.slice(2))
-var port = argv.port || argv.p || 1112
-var currentPath = argv.dir || argv.d || '.'
+const express = require('express')
+const app = express()
+const http = require('http').Server(app)
+const io = require('socket.io')(http)
+const chokidar = require('chokidar')
+const helper = require('./helper.js')
+const path = require('path')
+const os = require('os')
+const colors = require('colors/safe')
+const minimist = require('minimist')
+const version = require('./package.json').version
+const argv = minimist(process.argv.slice(2))
+const port = argv.port || argv.p || 1112
+const currentPath = argv.dir || argv.d || '.'
 
-var ifaces = os.networkInterfaces()
+const ifaces = os.networkInterfaces()
 colors.setTheme({
   silly: 'rainbow',
   input: 'grey',
@@ -78,10 +78,10 @@ app.all('/*', function (req, res, next) {
 })
 
 app.use('/files', express.static(currentPath, {
-  dotfiles: 'allow'
-  // setHeaders: function (res, path, stat) {
-  //   res.header('Content-Type', 'text/plain')
-  // }
+  dotfiles: 'allow',
+  setHeaders: function (res, path, stat) {
+    res.header('Content-Type', 'text/plain')
+  }
 }))
 
 var staticPath = path.join(__dirname, './dist')

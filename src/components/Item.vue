@@ -6,7 +6,7 @@
       <img :src="isIcon" width="15px" height="15px">
       {{model.name}}
     </div>
-    <ul v-show="open" v-if="isFolder">
+    <ul v-if="open && isFolder">
       <item
         class="item"
         v-for="model in model.children"
