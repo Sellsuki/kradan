@@ -75,6 +75,7 @@ export default {
         case 'png': return require('@/assets/icons/file_type_image.svg')
         case 'ico': return require('@/assets/icons/file_type_image.svg')
         case 'jpg': return require('@/assets/icons/file_type_image.svg')
+        case 'gif': return require('@/assets/icons/file_type_image.svg')
         case 'html': return require('@/assets/icons/file_type_html.svg')
         case 'vue': return require('@/assets/icons/file_type_vue.svg')
         case 'css': return require('@/assets/icons/file_type_css.svg')
