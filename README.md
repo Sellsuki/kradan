@@ -1,6 +1,6 @@
 # kradan
 
-> Tool for helping you to boardcast your code in your class room.
+> the Tool for helping you to boardcast your code in your class room.
 
 ![logo](https://rawgit.com/Sellsuki/kradan/master/icon.png)
 
