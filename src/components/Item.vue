@@ -12,7 +12,6 @@
         v-for="model in model.children"
         :model="model"
         :key="model.path"
-        :currentOpenFilePath="currentOpenFilePath"
         :unseen-file-paths="unseenFilePaths"
         :unseen-folder-paths="unseenFolderPaths"
         @openFile="openFile">
@@ -21,6 +20,7 @@
   </li>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'item',
   data () {
@@ -35,11 +35,13 @@ export default {
   },
   props: {
     model: Object,
-    currentOpenFilePath: String,
     unseenFilePaths: Array,
     unseenFolderPaths: Array
   },
   computed: {
+    ...mapGetters([
+      'currentOpenFilePath'
+    ]),
     isFolder: function () {
       return this.model.type === 'directory'
     },

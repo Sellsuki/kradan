@@ -2,13 +2,13 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
+import store from './store'
 import axios from 'axios'
 import 'codemirror/lib/codemirror.css'
 
+let host = null
+
 Vue.prototype.$isProduction = process.env.NODE_ENV === 'production'
-
-let host
-
 Vue.config.performance = true
 
 if (process.env.NODE_ENV !== 'production') {
@@ -18,6 +18,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 let baseApiUrl = `//${host}/`
+
 Vue.prototype.$baseApiUrl = baseApiUrl
 Vue.prototype.$host = host
 
@@ -28,5 +29,6 @@ Vue.prototype.$http = axios.create({
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store,
   render: h => h(App)
 })

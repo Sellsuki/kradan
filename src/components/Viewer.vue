@@ -1,6 +1,11 @@
 <template lang="html">
   <div>
-    <codemirror v-if="!isImage" :code="info.code" :options="info.editorOption" :unseen-lines="info.unseenLines" :marker="info.marker"></codemirror>
+    <codemirror
+    v-if="!isImage"
+    :code="info.code"
+    :options="info.editorOption"
+    :unseen-lines="info.unseenLines"
+    :marker="info.marker" />
     <div v-if="isImage" class="image-container">
       <img :src="$baseApiUrl + 'files/' + info.path" alt="" />
     </div>
@@ -8,6 +13,7 @@
 </template>
 
 <script>
+
 import { codemirror } from 'vue-codemirror'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/material.css'
@@ -26,13 +32,12 @@ import 'codemirror/addon/fold/foldgutter.js'
 import 'codemirror/addon/fold/indent-fold.js'
 import 'codemirror/addon/fold/markdown-fold.js'
 import 'codemirror/addon/fold/xml-fold.js'
-import 'codemirror/addon/search/search.js'
-import 'codemirror/addon/search/searchcursor.js'
-import 'codemirror/addon/dialog/dialog.js'
-import 'codemirror/addon/dialog/dialog.css'
 
 export default {
-  props: ['info', 'unseenLine'],
+  props: {
+    info: Object,
+    unseenLine: Array
+  },
   computed: {
     isImage () {
       const type = this.info.path.split('.').pop()
@@ -48,7 +53,6 @@ export default {
       return false
     }
   },
-  mounted () {},
   methods: {},
   components: {
     codemirror

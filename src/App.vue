@@ -6,7 +6,6 @@
           <item
             class="item"
             :model="list"
-            :currentOpenFilePath="currentOpenFilePath"
             :unseen-file-paths="unseenFilePaths"
             :unseen-folder-paths="unseenFolderPaths"
             @openFile="openFile">
@@ -47,14 +46,14 @@
 
 <script>
 import JSZip from 'jszip'
-import FileSaver from 'file-saver'
-import io from 'socket.io-client'
-import beautify from 'js-beautify'
-
+import { saveAs } from 'file-saver'
+import { connect } from 'socket.io-client'
+import beautify from 'json-beautify'
+import { mapMutations, mapGetters } from 'vuex'
 const Viewer = () => import('@/components/Viewer')
 const Item = () => import('@/components/Item')
 
-const JsDiff = require('diff')
+const { diffLines } = require('diff')
 const zip = new JSZip()
 
 export default {
@@ -66,22 +65,24 @@ export default {
         path: '/',
         children: []
       },
-      currentOpenFilePath: '',
-      openFiles: [],
-      unseenFilePaths: [],
-      unseenFolderPaths: [],
       unseenLine: [],
+      unseenFolderPaths: [],
       mousePress: false,
       divLeft: 200
     }
   },
   computed: {
+    ...mapGetters([
+      'currentOpenFilePath',
+      'openFiles',
+      'unseenFilePaths'
+    ]),
     divRight () {
       return (window.innerWidth - this.divLeft) - 10
     }
   },
   mounted () {
-    const socket = io.connect(this.$host)
+    const socket = connect(this.$host)
     socket.on('list', (list) => {
       if (list.name.lastIndexOf('\\') !== -1) {
         list.name = list.name.substring(list.name.lastIndexOf('\\') + 1, list.name.length)
@@ -97,6 +98,11 @@ export default {
     })
   },
   methods: {
+    ...mapMutations([
+      'mutateCurrentOpenFilePath',
+      'sliceOpenFiles',
+      'sliceUnseenFilePaths'
+    ]),
     async getFile (path) {
       let response = await this.$http.get('/files' + path)
       const name = path.split('/').pop()
@@ -105,6 +111,7 @@ export default {
         path: path,
         code: '',
         unseenLines: [],
+
         marker: () => {
           let marker = document.createElement('div')
           marker.style.color = '#fba949'
@@ -133,10 +140,10 @@ export default {
         if (typeof response.data === 'string') {
           code = response.data
         } else if (typeof response.data === 'object') {
-          code = beautify(JSON.stringify(response.data))
+          code = beautify(response.data, null, 2, 100)
         }
 
-        let diff = JsDiff.diffLines(fileChanged.code, code)
+        let diff = diffLines(fileChanged.code, code)
 
         fileChanged.unseenLines = this.addUnseenLine(diff)
         fileChanged.code = code
@@ -146,20 +153,22 @@ export default {
         if (typeof response.data === 'string') {
           newFile.code = response.data
         } else if (typeof response.data === 'object') {
-          newFile.code = beautify(JSON.stringify(response.data))
+          newFile.code = beautify(response.data, null, 2, 100)
         }
 
         const index = this.openFiles.findIndex(file => file.path === this.currentOpenFilePath)
-        this.openFiles.splice(index + 1, 0, newFile)
-        this.currentOpenFilePath = path
+
+        this.sliceOpenFiles({index, newFile})
+        this.mutateCurrentOpenFilePath(path)
       }
     },
     openFile (path) {
       this.removeUnseenFile(path)
+
       if (!this.openFiles.find(file => file.path === path)) {
         this.getFile(path)
       } else {
-        this.currentOpenFilePath = path
+        this.mutateCurrentOpenFilePath(path)
       }
     },
     closeFile: function (path) {
@@ -168,9 +177,9 @@ export default {
       if (this.currentOpenFilePath === path) {
         const newIndex = (index <= 0) ? index : index - 1
         if (this.openFiles.length === 0) {
-          this.currentOpenFilePath = ''
+          this.mutateCurrentOpenFilePath('')
         } else {
-          this.currentOpenFilePath = this.openFiles[newIndex].path
+          this.mutateCurrentOpenFilePath(this.openFiles[newIndex].path)
         }
       }
     },
@@ -224,7 +233,7 @@ export default {
     async downloadZip () {
       await this.getZip(this.list)
       const blob = await zip.generateAsync({type: 'blob'})
-      FileSaver.saveAs(blob, this.list.name + '.zip')
+      saveAs(blob, this.list.name + '.zip')
     },
     async getZip (lists) {
       for (const list of lists.children) {
@@ -233,7 +242,6 @@ export default {
           await this.getZip(list)
         } else if (list.type === 'file' && (type === 'PNG' || type === 'JPG' || type === 'JPEG' || type === 'ICO' || type === 'SVG' || type === 'GIF')) {
           const imgData = await this.promiseImage(list)
-          console.log(imgData)
           zip.file(this.list.name + list.path, imgData, {base64: true})
         } else if (list.type === 'file' && type !== 'MAP') {
           const response = await this.$http.get('/files' + list.path)
