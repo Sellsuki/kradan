@@ -9,6 +9,11 @@
 ``` bash
 sudo npm install -g kradan
 kradan
+
+or
+
+kradan --dir /path/to/
+
 ```
 ![logo](https://rawgit.com/devilmustcry/kradan/master/usage-tutorial.gif)
 
