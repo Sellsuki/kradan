@@ -1,6 +1,6 @@
 # kradan
 
-> A Vue.js project
+> Tool for helping you to boardcast your code in your class room.
 
 ![logo](https://rawgit.com/Sellsuki/kradan/master/icon.png)
 
@@ -24,13 +24,10 @@ kradan --dir /path/to/
 npm install
 
 # run unit tests
-npm run unit
-
-# run all tests
-npm test
+npm run build
 ```
 
-## Dev
+## Development
 
 ``` bash
 npm run dev

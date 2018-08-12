@@ -144,7 +144,7 @@ export default {
         }
 
         let diff = diffLines(fileChanged.code, code)
-
+        console.log(fileChanged.code, code)
         fileChanged.unseenLines = this.addUnseenLine(diff)
         fileChanged.code = code
       } else {
