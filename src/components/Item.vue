@@ -6,12 +6,12 @@
       <img :src="isIcon" width="15px" height="15px">
       {{model.name}}
     </div>
-    <ul v-show="open" v-if="isFolder">
+    <ul v-if="open && isFolder">
       <item
         class="item"
         v-for="model in model.children"
         :model="model"
-        :currentOpenFilePath="currentOpenFilePath"
+        :key="model.path"
         :unseen-file-paths="unseenFilePaths"
         :unseen-folder-paths="unseenFolderPaths"
         @openFile="openFile">
@@ -20,6 +20,7 @@
   </li>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'item',
   data () {
@@ -34,11 +35,13 @@ export default {
   },
   props: {
     model: Object,
-    currentOpenFilePath: String,
     unseenFilePaths: Array,
     unseenFolderPaths: Array
   },
   computed: {
+    ...mapGetters([
+      'currentOpenFilePath'
+    ]),
     isFolder: function () {
       return this.model.type === 'directory'
     },
@@ -59,24 +62,33 @@ export default {
     },
     isIcon () {
       const icon = this.model.name.split('.').pop(-1)
-      if (this.model.type === 'directory') return '../../static/folder.png'
-      else if (this.model.name === 'package.json') return '../../static/npm.png'
-      else if (this.model.name === 'yarn.lock') return '../../static/yarn.png'
+      if (this.model.name === 'package.json') return require('@/assets/icons/file_type_npm.svg')
+      else if (this.model.name === 'yarn.lock') return require('@/assets/icons/file_type_yarn.svg')
+      else if (this.model.name === 'src') return require('@/assets/icons/folder_type_src_opened.svg')
+      else if (this.model.name === 'public') return require('@/assets/icons/folder_type_public_opened.svg')
+      else if (this.model.name === 'dist') return require('@/assets/icons/folder_type_dist_opened.svg')
+      else if (this.model.name === 'tests') return require('@/assets/icons/folder_type_test_opened.svg')
+      else if (this.model.type === 'directory') return require('@/assets/icons/default_folder_opened.svg')
       switch (icon) {
-        case 'js': return '../../static/js.png'
-        case 'log': return '../../static/log.ico'
-        case 'png': return '../../static/pic.png'
-        case 'ico': return '../../static/pic.png'
-        case 'jpg': return '../../static/pic.png'
-        case 'html': return '../../static/html.png'
-        case 'vue': return '../../static/vue.png'
-        case 'css': return '../../static/css.png'
-        case 'md': return '../../static/md.png'
-        case 'editorconfig': return '../../static/eslint.png'
-        case 'eslintignore': return '../../static/eslint.png'
-        case 'babelrc': return './../static/babel.png'
-        case 'jsx': return '../../static/jsx.png'
-        case 'ts': return '../../static/ts.png'
+        case 'js': return require('@/assets/icons/file_type_js_official.svg')
+        case 'log': return require('@/assets/icons/file_type_log.svg')
+        case 'png': return require('@/assets/icons/file_type_image.svg')
+        case 'ico': return require('@/assets/icons/file_type_image.svg')
+        case 'jpg': return require('@/assets/icons/file_type_image.svg')
+        case 'gif': return require('@/assets/icons/file_type_image.svg')
+        case 'html': return require('@/assets/icons/file_type_html.svg')
+        case 'vue': return require('@/assets/icons/file_type_vue.svg')
+        case 'css': return require('@/assets/icons/file_type_css.svg')
+        case 'md': return require('@/assets/icons/file_type_markdown.svg')
+        case 'editorconfig': return require('@/assets/icons/file_type_editorconfig.svg')
+        case 'eslintignore': return require('@/assets/icons/file_type_eslint.svg')
+        case 'babelrc': return require('@/assets/icons/file_type_babel2.svg')
+        case 'jsx': return require('@/assets/icons/file_type_reactjs.svg')
+        case 'ts': return require('@/assets/icons/file_type_typescript_official.svg')
+        case 'map': return require('@/assets/icons/file_type_map.svg')
+        case 'svg': return require('@/assets/icons/file_type_svg.svg')
+        case 'zip': return require('@/assets/icons/file_type_zip.svg')
+        default: return require('@/assets/icons/default_file.svg')
       }
     }
   },
@@ -94,6 +106,3 @@ export default {
   }
 }
 </script>
-
-<style lang="css">
-</style>

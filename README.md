@@ -1,6 +1,6 @@
 # kradan
 
-> A Vue.js project
+> The tool for helping you to boardcast your code in your class room.
 
 ![logo](https://rawgit.com/Sellsuki/kradan/master/icon.png)
 
@@ -9,6 +9,11 @@
 ``` bash
 sudo npm install -g kradan
 kradan
+
+or
+
+kradan --dir /path/to/
+
 ```
 ![logo](https://rawgit.com/devilmustcry/kradan/master/usage-tutorial.gif)
 
@@ -19,22 +24,11 @@ kradan
 npm install
 
 # run unit tests
-npm run unit
-
-# run all tests
-npm test
+npm run build
 ```
 
-## Dev
+## Development
 
-```bash
-# Run backend process
-nodemon kradan.js
-
-# Run frontend
+``` bash
 npm run dev
 ```
-
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
-
-icon modify from https://dribbble.com/shots/1827488-Final-Sublime-Text-Replacement-Icon

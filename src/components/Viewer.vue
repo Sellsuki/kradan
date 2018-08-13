@@ -1,19 +1,43 @@
 <template lang="html">
   <div>
-    <codemirror v-if="!isImage" :code="info.code" :options="info.editorOption" :unseen-lines="info.unseenLines" :marker="info.marker"></codemirror>
+    <codemirror
+    v-if="!isImage"
+    :code="info.code"
+    :options="info.editorOption"
+    :unseen-lines="info.unseenLines"
+    :marker="info.marker" />
     <div v-if="isImage" class="image-container">
-      <img :src="'files/' + info.path" alt="" />
+      <img :src="$baseApiUrl + 'files/' + info.path" alt="" />
     </div>
   </div>
 </template>
 
 <script>
+
 import { codemirror } from 'vue-codemirror'
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/theme/material.css'
+import 'codemirror/mode/javascript/javascript.js'
+import 'codemirror/mode/php/php.js'
+import 'codemirror/mode/vue/vue.js'
+import 'codemirror/mode/css/css.js'
+import 'codemirror/mode/go/go.js'
+import 'codemirror/mode/dockerfile/dockerfile.js'
+import 'codemirror/mode/markdown/markdown.js'
+import 'codemirror/addon/fold/foldgutter.css'
+import 'codemirror/addon/fold/brace-fold.js'
+import 'codemirror/addon/fold/comment-fold.js'
+import 'codemirror/addon/fold/foldcode.js'
+import 'codemirror/addon/fold/foldgutter.js'
+import 'codemirror/addon/fold/indent-fold.js'
+import 'codemirror/addon/fold/markdown-fold.js'
+import 'codemirror/addon/fold/xml-fold.js'
+
 export default {
-  data () {
-    return {}
+  props: {
+    info: Object,
+    unseenLine: Array
   },
-  props: ['info', 'unseenLine'],
   computed: {
     isImage () {
       const type = this.info.path.split('.').pop()
@@ -29,7 +53,6 @@ export default {
       return false
     }
   },
-  mounted () {},
   methods: {},
   components: {
     codemirror

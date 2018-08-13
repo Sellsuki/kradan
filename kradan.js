@@ -1,21 +1,22 @@
 #!/usr/bin/env node
 'use strict'
 
-var express = require('express')
-var app = express()
-var http = require('http').Server(app)
-var io = require('socket.io')(http)
-var chokidar = require('chokidar')
-var helper = require('./helper.js')
-var path = require('path')
-var os = require('os')
-var colors = require('colors/safe')
-var minimist = require('minimist')
-var version = require('./package.json').version
-var argv = minimist(process.argv.slice(2))
-var port = argv.port || argv.p || 1112
+const express = require('express')
+const app = express()
+const http = require('http').Server(app)
+const io = require('socket.io')(http)
+const chokidar = require('chokidar')
+const helper = require('./helper.js')
+const path = require('path')
+const os = require('os')
+const colors = require('colors/safe')
+const minimist = require('minimist')
+const version = require('./package.json').version
+const argv = minimist(process.argv.slice(2))
+const port = argv.port || argv.p || 1112
+const currentPath = argv.dir || argv.d || '.'
 
-var ifaces = os.networkInterfaces()
+const ifaces = os.networkInterfaces()
 colors.setTheme({
   silly: 'rainbow',
   input: 'grey',
@@ -40,6 +41,7 @@ if (argv.h || argv.help || argv._.length) {
       -h, --help      Display help messages
       -v, --version   Display current kradan version
       -p, --port      Specify port number
+      -d, --dir       Working Dir
 
     Examples:
       ${colors.data('# Display help messages')}
@@ -65,8 +67,9 @@ if (!Number.isInteger(port) || !(port >= 1024 && port <= 65535)) {
 }
 
 var data = {}
-data.ls = helper.getDirJson('.')
-data.list = helper.getDirList('.')
+data.ls = helper.getDirJson(currentPath)
+
+data.list = helper.getDirList(currentPath)
 
 app.all('/*', function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
@@ -74,7 +77,7 @@ app.all('/*', function (req, res, next) {
   next()
 })
 
-app.use('/files', express.static('.', {
+app.use('/files', express.static(currentPath, {
   dotfiles: 'allow',
   setHeaders: function (res, path, stat) {
     res.header('Content-Type', 'text/plain')
@@ -85,7 +88,7 @@ var staticPath = path.join(__dirname, './dist')
 app.use('/', express.static(staticPath))
 
 app.get('/ls', function (req, res) {
-  let result = helper.getDirJson('.')
+  let result = helper.getDirJson(currentPath)
   res.send(result)
 })
 
@@ -93,26 +96,26 @@ io.on('connection', function (socket) {
   io.emit('list', data.ls)
 })
 
-chokidar.watch('.', {
-  ignored: /[\/\\]\.|node_modules|\.git|\.DS_Store/,
+chokidar.watch(currentPath, {
+  ignored: /[\\]\.|node_modules|\.git|\.DS_Store/,
   ignorePermissionErrors: true,
   persistent: true
 }).on('all', (event, path) => {
   switch (event) {
     case 'unlink':
     case 'unlinkDir':
-      data.ls = helper.getDirJson('.')
+      data.ls = helper.getDirJson(currentPath)
       io.emit('list', data.ls)
       break
     case 'add':
       if (!data.list.find(item => item === path)) {
-        data.ls = helper.getDirJson('.')
+        data.ls = helper.getDirJson(currentPath)
         io.emit('list', data.ls)
       }
       break
     case 'addDir':
-      if (!data.list.find(item => item === path + '/') && path !== '.') {
-        data.ls = helper.getDirJson('.')
+      if (!data.list.find(item => item === path + '/') && path !== currentPath) {
+        data.ls = helper.getDirJson(currentPath)
         io.emit('list', data.ls)
       }
       break
