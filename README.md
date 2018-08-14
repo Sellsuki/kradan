@@ -2,7 +2,7 @@
 
 > The tool for helping you to boardcast your code in your class room.
 
-![logo](https://rawgit.com/thangman22/kradan/master/icon.png) {:height="200px" width="200px"}
+<img src="https://rawgit.com/thangman22/kradan/master/icon.png" height="200">
 
 ## What is kradan
 
