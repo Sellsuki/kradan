@@ -19,6 +19,16 @@ kradan --dir /path/to/
 ```
 ![logo](https://rawgit.com/devilmustcry/kradan/master/usage-tutorial.gif)
 
+## options
+
+``` bash
+-h, --help      Display help messages
+-v, --version   Display current kradan version
+-u, --public    Genrate public URL by ngrok
+-p, --port      Specify port number
+-d, --dir       Working Dir
+```
+
 ## Build Setup
 
 ``` bash

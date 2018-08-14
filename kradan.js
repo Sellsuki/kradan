@@ -7,6 +7,7 @@ const http = require('http').Server(app)
 const io = require('socket.io')(http)
 const chokidar = require('chokidar')
 const helper = require('./helper.js')
+const ngrok = require('ngrok')
 const path = require('path')
 const os = require('os')
 const colors = require('colors/safe')
@@ -17,6 +18,7 @@ const port = argv.port || argv.p || 1112
 const currentPath = argv.dir || argv.d || '.'
 
 const ifaces = os.networkInterfaces()
+
 colors.setTheme({
   silly: 'rainbow',
   input: 'grey',
@@ -40,6 +42,7 @@ if (argv.h || argv.help || argv._.length) {
     Options:
       -h, --help      Display help messages
       -v, --version   Display current kradan version
+      -u, --public    Genrate public URL by ngrok
       -p, --port      Specify port number
       -d, --dir       Working Dir
 
@@ -127,7 +130,11 @@ chokidar.watch(currentPath, {
   }
 })
 
-http.listen(port, function () {
+http.listen(port, async function () {
+  let ngrokUrl = null
+  if (argv.u || argv.public) {
+    ngrokUrl = await ngrok.connect(port)
+  }
   console.log(colors.warn('Starting up kradan'))
   console.log(colors.warn('Available on:'))
   Object.keys(ifaces).forEach(function (dev) {
@@ -137,6 +144,10 @@ http.listen(port, function () {
       }
     })
   })
+  if (argv.u || argv.public) {
+    console.log(colors.warn('Available on public:'))
+    console.log('  ' + colors.info(ngrokUrl))
+  }
   console.log('Hit CTRL-C to stop the server')
 })
 
