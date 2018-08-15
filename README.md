@@ -1,6 +1,6 @@
 # kradan
 
-> The tool for helping you to broadcast your code in your class room.
+> The tool for helping you to broadcast your code in your speaking session.
 
 <img src="https://rawgit.com/thangman22/kradan/master/icon.png" height="200">
 
