@@ -1,8 +1,12 @@
 # kradan
 
-> The tool for helping you to boardcast your code in your class room.
+> The tool for helping you to broadcast your code in your speaking session.
 
-![logo](https://rawgit.com/Sellsuki/kradan/master/icon.png)
+<img src="https://rawgit.com/thangman22/kradan/master/icon.png" height="200">
+
+## What is kradan
+
+Kradan is a tool for helping you to public your live code with your class or training session. It's not easy to write down a code and let's everyone in the room understand or copy your code. Kradan will watch and list your file on current directory and publish to web ui. You will able to switch to another screen but your following still able to inspect the code and copy to there project.
 
 ## usage
 
@@ -16,6 +20,16 @@ kradan --dir /path/to/
 
 ```
 ![logo](https://rawgit.com/devilmustcry/kradan/master/usage-tutorial.gif)
+
+## options
+
+``` bash
+-h, --help      Display help messages
+-v, --version   Display current kradan version
+-u, --public    Genrate public URL by ngrok
+-p, --port      Specify port number
+-d, --dir       Working Dir
+```
 
 ## Build Setup
 
